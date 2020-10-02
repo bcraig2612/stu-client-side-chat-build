@@ -5,7 +5,7 @@ import {
 } from "react-router-dom";
 import { SnackbarProvider } from 'notistack';
 import Pusher from 'pusher-js';
-import {useGetConversations, useQuery} from "./customHooks";
+import {useQuery} from "./customHooks";
 import ConversationList from './components/ConversationList';
 import Layout from "./components/Layout";
 import ConversationMain from "./components/ConversationMain";
@@ -14,17 +14,27 @@ function App() {
   let query = useQuery();
   let { conversationID } = useParams();
   const history = useHistory();
-  const [selectedConversation, setSelectedConversation] = useState(false);
+  const [selectedConversation, setSelectedConversation] = useState(null);
+  const [conversations, setConversations] = useState([]);
+  const [conversationsLoading, setConversationsLoading] = useState(false);
   const [filter, setFilter] = useState('open');
   const queryFilter = query.get('filter') ? query.get('filter') : 'open';
-
-  const {data, isLoading, isError} = useGetConversations();
 
   useEffect(() => {
     setFilter(queryFilter);
   }, [queryFilter]);
 
   useEffect(() => {
+    setConversationsLoading(true);
+    // make call to api to get conversation
+    fetch('http://localhost:9000/api/dummy_data.php?conversation=1')
+      .then(response => response.json())
+      .then(data => {
+        console.log('loading conversations..')
+        setConversations(data.conversations);
+        setConversationsLoading(false);
+      });
+
     // connect to pusher
     // set up pusher
     Pusher.logToConsole = true;
@@ -57,8 +67,8 @@ function App() {
       {console.count('app')}
 
       <Layout>
-        <ConversationList conversationsLoading={isLoading} conversations={data} setFilter={setFilter} filter={queryFilter} selectedConversation={selectedConversation} />
-        <ConversationMain conversations={data} selectedConversation={selectedConversation} />
+        <ConversationList conversationsLoading={conversationsLoading} conversations={conversations} setFilter={setFilter} filter={filter} selectedConversation={selectedConversation} />
+        <ConversationMain conversations={conversations} selectedConversation={selectedConversation} />
       </Layout>
     </SnackbarProvider>
   );

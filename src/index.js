@@ -1,12 +1,34 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import {
+  BrowserRouter as Router, Redirect, Route, Switch,
+} from "react-router-dom";
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import CssBaseline from "@material-ui/core/CssBaseline";
+import {SWRConfig} from "swr";
+import fetch from "unfetch";
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <CssBaseline />
+    <Router>
+      <Switch>
+        <Route path={["/conversation/:conversationID", "/conversation"]}>
+          <SWRConfig
+            value={{
+              refreshInterval: 0,
+              fetcher: (resource, init) => fetch(resource, init).then(res => res.json())
+            }}
+          >
+          <App />
+          </SWRConfig>
+        </Route>
+        <Route path="/">
+          <Redirect to="/conversation" />
+        </Route>
+      </Switch>
+    </Router>
   </React.StrictMode>,
   document.getElementById('root')
 );
