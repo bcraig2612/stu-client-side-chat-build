@@ -2,13 +2,23 @@ import {useLocation} from "react-router-dom";
 import useSWR from "swr";
 
 const apiURL = 'https://dev01.sotellus.com/API/chat/';
-const token = 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvc290ZWxsdXMuY29tIiwiYXVkIjoiaHR0cHM6XC9cL3NvdGVsbHVzLmNvbSIsImNsaWVudGlkIjoxMjEwLCJpc19jbGllbnRfY29udGFjdCI6MCwiY2hhbm5lbF9uYW1lIjoiY2hhbm5lbF9kZW1vIiwiY2xpZW50X2NvbnRhY3RfaWQiOmZhbHNlLCJleHAiOjE2MDIyOTgxOTd9.OinwfuIuNq_wwDqBs6Vs6fKhF3TO-Onl_hNarbbhGUQ';
 
 export function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
+export function getJWT() {
+  const token = localStorage.getItem('stu_jwt');
+  if (token) {
+    // return for use in Authorization header
+    return 'Bearer ' + token;
+  }
+  window.location.href = "https://sotellus.com/login";
+  return false;
+}
+
 export async function requestSendMessage(body, conversationID) {
+  const token = getJWT();
   const data = {body: body, conversationID: conversationID};
   return fetch(apiURL + 'messages/', {
     method: "POST",
@@ -22,6 +32,7 @@ export async function requestSendMessage(body, conversationID) {
 }
 
 export function useGetConversation(id) {
+  const token = getJWT();
 
   const fetcher = async url => {
     const res = await fetch(apiURL + 'messages/?conversationID=' + id, {
@@ -54,6 +65,7 @@ export function useGetConversation(id) {
 }
 
 export function useGetConversations(filter) {
+  const token = getJWT();
 
   const fetcher = async url => {
     const res = await fetch(apiURL + 'conversations/?filter=' + filter, {
