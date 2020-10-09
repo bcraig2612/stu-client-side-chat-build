@@ -23,12 +23,19 @@ const useStyles = makeStyles((theme) => ({
 function ComposeMessage(props) {
   const classes = useStyles();
   const [composeMessageValue, setComposeMessageValue] = useState('');
+  const [sendDisabled, setSendDisabled] = useState(false);
 
   function handleChange(e) {
     setComposeMessageValue(e.target.value);
   }
 
   function sendMessage() {
+    if (composeMessageValue.length < 1) {
+      return false;
+    }
+    setSendDisabled(true);
+    setTimeout(() => setSendDisabled(false), 1000);
+    props.sendMessage(composeMessageValue);
     setComposeMessageValue('');
   }
 
@@ -44,7 +51,7 @@ function ComposeMessage(props) {
         onChange={handleChange}
       />
       <div className={classes.composeActions}>
-        <Button variant="contained" color="primary" onClick={sendMessage}>
+        <Button disabled={sendDisabled} variant="contained" color="primary" onClick={sendMessage}>
           Send
         </Button>
       </div>

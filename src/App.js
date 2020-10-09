@@ -9,16 +9,18 @@ import {useGetConversations, useQuery} from "./customHooks";
 import ConversationList from './components/ConversationList';
 import Layout from "./components/Layout";
 import ConversationMain from "./components/ConversationMain";
+import Alert from "@material-ui/lab/Alert";
 
 function App() {
   let query = useQuery();
   let { conversationID } = useParams();
   const history = useHistory();
-  const [selectedConversation, setSelectedConversation] = useState(false);
+  const [selectedConversation, setSelectedConversation] = useState(null);
+  const [mobileConversationListOpen, setMobileConversationListOpen] = useState(true);
   const [filter, setFilter] = useState('open');
   const queryFilter = query.get('filter') ? query.get('filter') : 'open';
 
-  const {data, isLoading, isError} = useGetConversations();
+  const {data, isLoading, isError} = useGetConversations(filter);
 
   useEffect(() => {
     setFilter(queryFilter);
@@ -31,6 +33,10 @@ function App() {
     const pusher = new Pusher('66e7f1b4416d81db9385', {
       cluster: 'us3'
     });
+
+    if (conversationID) {
+      setSelectedConversation(conversationID);
+    }
 
     // subscribe to inbox notifications
     let channel = pusher.subscribe('inbox-notifications');
@@ -49,16 +55,22 @@ function App() {
     if (! selectedConversation) {
       return;
     }
-
+    setMobileConversationListOpen(false);
   }, [selectedConversation]);
 
+  let content = (
+    <React.Fragment>
+      <ConversationList errorLoadingConversation={isError} setMobileConversationListOpen={() => setMobileConversationListOpen(false)} mobileConversationListOpen={mobileConversationListOpen} conversationsLoading={isLoading} conversations={data} setFilter={setFilter} filter={queryFilter} selectedConversation={selectedConversation} />
+      <ConversationMain setMobileConversationListOpen={() => setMobileConversationListOpen(true)} conversations={data} selectedConversation={selectedConversation} />
+    </React.Fragment>
+  );
+
   return (
-    <SnackbarProvider maxSnack={3}>
+    <SnackbarProvider maxSnack={1}>
       {console.count('app')}
 
       <Layout>
-        <ConversationList conversationsLoading={isLoading} conversations={data} setFilter={setFilter} filter={queryFilter} selectedConversation={selectedConversation} />
-        <ConversationMain conversations={data} selectedConversation={selectedConversation} />
+        {content}
       </Layout>
     </SnackbarProvider>
   );

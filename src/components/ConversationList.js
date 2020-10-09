@@ -5,6 +5,8 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import {Link, useHistory} from "react-router-dom";
 import Skeleton from "@material-ui/lab/Skeleton";
+import moment from "moment";
+import Badge from "@material-ui/core/Badge";
 
 const useStyles = makeStyles((theme) => ({
   conversationList: {
@@ -27,6 +29,11 @@ const useStyles = makeStyles((theme) => ({
       maxWidth: "100%",
       width: "100%",
       zIndex: "2000"
+    },
+  },
+  mobileHidden: {
+    [theme.breakpoints.down('xs')]: {
+      display: "none"
     },
   },
   header: {
@@ -73,7 +80,20 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "1.2em",
   },
   lastMessage: {
-
+    overflowX: "hidden",
+    whiteSpace: "nowrap"
+  },
+  listItemTop: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center"
+  },
+  listItemSent: {
+    fontSize: ".9em"
+  },
+  noResultsContainer: {
+    textAlign: "center",
+    padding: "20px"
   }
 }));
 
@@ -95,14 +115,14 @@ function ConversationList(props) {
     </React.Fragment>
   );
 
-  if (!props.conversationsLoading) {
-    conversations = props.conversations.conversations.map((conversation) => {
+  if (!props.conversationsLoading && !props.errorLoadingConversation) {
+    conversations = props.conversations.data.conversations.map((conversation) => {
       const status = conversation.active ? 'open' : 'closed';
 
       // filter conversations based on status
-      if (props.filter !== status) {
-        return false;
-      }
+      // if (props.filter !== status) {
+      //   return false;
+      // }
 
       let classList = classes.listItem;
 
@@ -111,13 +131,31 @@ function ConversationList(props) {
         classList += ' ' + classes.selectedConversation;
       }
 
+      let sent = moment.utc(conversation.sent);
+      sent = sent.local().calendar();
+
       return (
-        <Link key={conversation.id} to={"/conversation/" + conversation.id + '?filter=' + status} className={classList}>
-          <div className={classes.visitorName}>{conversation.name}</div>
+        <Link onClick={props.setMobileConversationListOpen} key={conversation.id} to={"/conversation/" + conversation.id + '?filter=' + status} className={classList}>
+          <div className={classes.listItemTop}>
+            <span className={classes.visitorName}>
+                {conversation.name}
+            </span>
+            <span className={classes.listItemSent}>
+              {sent}
+            </span>
+          </div>
           <div className={classes.lastMessage}>{conversation.body}</div>
         </Link>
       );
     });
+  }
+
+  if (!props.conversationsLoading && props.errorLoadingConversation) {
+    conversations = (
+      <div className={classes.noResultsContainer}>
+        No {props.filter} conversations found.
+      </div>
+    );
   }
 
   const filterChange = (event, newValue) => {
@@ -129,8 +167,14 @@ function ConversationList(props) {
     props.setFilter(newValue);
   };
 
+  let containerClasses = classes.conversationList;
+
+  if (!props.mobileConversationListOpen) {
+    containerClasses += ' ' + classes.mobileHidden;
+  }
+
   return (
-    <div className={classes.conversationList}>
+    <div className={containerClasses}>
       <div className={classes.header}>
         <div className={classes.title}>
           <span>Live Chat</span>
