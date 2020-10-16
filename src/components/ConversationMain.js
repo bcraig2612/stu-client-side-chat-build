@@ -3,19 +3,29 @@ import {makeStyles} from "@material-ui/core/styles";
 import ConversationItem from "./ConversationItem";
 import ComposeMessage from "./ComposeMessage";
 import IconButton from "@material-ui/core/IconButton";
-import CheckIcon from '@material-ui/icons/Check';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Tooltip from "@material-ui/core/Tooltip";
 import Skeleton from "@material-ui/lab/Skeleton";
 import Button from "@material-ui/core/Button";
 import { useSnackbar } from 'notistack';
-import {requestSendMessage, useGetConversation} from "../customHooks";
+import {
+  requestAcceptConversation,
+  requestDeleteConversation,
+  requestSendMessage,
+  requestUpdateConversation,
+  useGetConversation
+} from "../customHooks";
 import Pusher from "pusher-js";
 import {mutate} from "swr";
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import Chip from "@material-ui/core/Chip";
+import {useHistory} from "react-router-dom";
+import ComposeMessageLocked from "./ComposeMessageLocked";
+import ConversationLog from "./ConversationLog";
+
+const apiURL = 'https://dev01.sotellus.com/API/chat/';
 
 const useStyles = makeStyles((theme) => ({
   conversationMain: {
@@ -86,64 +96,63 @@ const useStyles = makeStyles((theme) => ({
 
 // connect to pusher
 // set up pusher
-Pusher.logToConsole = true;
+Pusher.logToConsole = false;
 const pusher = new Pusher('66e7f1b4416d81db9385', {
-  cluster: 'us3'
+  cluster: 'us3',
+  authEndpoint: 'https://dev01.sotellus.com/API/chat/pusherAuthentication/',
+  auth: {
+    headers: {
+      Authorization: 'Bearer ' + localStorage.getItem('stu_jwt'),
+    }
+  }
 });
 
 function ConversationMain(props) {
   const classes = useStyles();
-  const [conversationDetails, setConversationDetails] = useState({});
   const { enqueueSnackbar } = useSnackbar();
+  const history = useHistory();
 
   const {data, isLoading, isError} = useGetConversation(props.selectedConversation);
 
   // reference for end of message container
   const messagesEnd = useRef(null);
+  const [submittingAcceptConversation, setSubmittingAcceptConversation] = useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   useEffect(() => {
-    if (data) {
-      const channel = pusher.subscribe('channel_demo');
+    if (data && data.data.conversation) {
+      const channel = pusher.subscribe(data.data.conversation.channel_name);
       channel.unbind('new-message');
 
       // new incoming messages
       channel.bind('new-message', function (message) {
         mutate(() => props.selectedConversation ? 'messages/?conversationID=' + props.selectedConversation : null, previousData => {
-          console.log(previousData);
-          return {...previousData, data: {messages: [...previousData.data.messages, message]}}
+          return {...previousData, data: {conversation: previousData.data.conversation, messages: [...previousData.data.messages, message]}}
         }, false);
       });
     }
-  });
+  }, [data]);
 
   useEffect(() => {
-    if (data) {
+    if (data && data.data.conversation) {
       // subscribe to inbox notifications
-      const channel = pusher.subscribe('channel_demo');
+      const channel = pusher.subscribe(data.data.conversation.channel_name);
 
       // new incoming messages
       channel.bind('new-message', function(message) {
         mutate(() => props.selectedConversation ? 'messages/?conversationID=' + props.selectedConversation : null,  previousData => {
-          console.log(previousData);
-          return {...previousData, data: { messages: [...previousData.data.messages, message]} }
+          return {...previousData, data: { conversation: previousData.data.conversation, messages: [...previousData.data.messages, message]} }
         }, false);
       });
     }
   }, [props.selectedConversation]);
-
-  useEffect(() => {
-    if (props.conversations) {
-      setConversationDetails(props.conversations.data.conversations.find(element => element.id == props.selectedConversation));
-    }
-  }, [props.conversations, props.selectedConversation]);
 
   // scroll to most recent chat messages on render
   useEffect(() => {
     if (messagesEnd.current) {
       messagesEnd.current.scrollIntoView({behavior: "smooth"});
     }
-  }, [data]);
+  });
 
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -153,6 +162,32 @@ function ConversationMain(props) {
     setAnchorEl(null);
   };
 
+  const handleChangeStatus = (active) => {
+    setAnchorEl(null);
+    let res = requestUpdateConversation(active, props.selectedConversation);
+    res.then(data => {
+      const filter = active ? 'open' : 'closed';
+      history.push('/conversation/' + props.selectedConversation + '?filter=' + filter);
+      mutate('messages/?conversationID=' + props.selectedConversation);
+    })
+      .catch(() => {
+        displayError('Error updating conversation.');
+      });
+  };
+
+  const handleDelete = (active) => {
+    setAnchorEl(null);
+    let res = requestDeleteConversation(props.selectedConversation);
+    res.then(data => {
+      const filter = active ? 'open' : 'closed';
+      history.push('/conversation/?filter=' + filter);
+      mutate('conversations/?filter=' + filter);
+    })
+      .catch(() => {
+        displayError('Error deleting conversation.');
+      });
+  };
+
   const sendMessage = async (message) => {
     const id = props.selectedConversation;
     // mutate(() => props.selectedConversation ? 'messages/?conversationID=' + id : null,  previousData => {
@@ -160,16 +195,37 @@ function ConversationMain(props) {
     //   return {...previousData, data: { messages: [...previousData.data.messages, {id: Math.random(), body: message}]} }
     // }, false);
 
-    const result = await requestSendMessage(message, id);
-    // do something else here after firstFunction completes
-    if (result && result.status == 'success') {
+    const res = requestSendMessage(message, id);
+    res.then(data => {
+      console.log('message sent');
+    })
+      .catch(() => {
+        displayError('Error sending message.');
+      });
+  }
 
-    }
+  const acceptConversation = async (id) => {
+    setSubmittingAcceptConversation(true);
+    const res = requestAcceptConversation(id);
+    res.then(data => {
+      setSubmittingAcceptConversation(false);
+      mutate('messages/?conversationID=' + id);
+      mutate('conversations/?filter=open');
+    })
+      .catch(() => {
+        setSubmittingAcceptConversation(false);
+        displayError('Error accepting conversation.');
+      });
   }
 
   function handleStatusChange() {
     const variant = 'error';
     enqueueSnackbar('Could not load conversation.', { variant });
+  }
+
+  function displayError(message) {
+    const variant = 'error';
+    enqueueSnackbar(message, { variant });
   }
 
   function handleBackArrow() {
@@ -209,7 +265,7 @@ function ConversationMain(props) {
     );
   }
 
-  if (! props.selectedConversation || ! conversationDetails) {
+  if (! props.selectedConversation) {
     return (
       <div className={classes.conversationMain}>
         <div className={classes.infoBoxContainer}>
@@ -224,17 +280,33 @@ function ConversationMain(props) {
     )
   }
 
-  return (
-    <div className={classes.conversationMain}>
+  let contentHeader = (
+    <div className={classes.header}>
+      <div className={classes.visitorName}>
+        <IconButton size="medium" aria-label="Close" onClick={handleBackArrow} className={classes.backArrow}>
+          <KeyboardBackspaceIcon />
+        </IconButton>
+        <div>
+          <Skeleton variant="text" width={"200px"} height={30} />
+          <div style={{fontSize: ".8em", fontWeight: "normal"}}>
+            <Skeleton variant="text" width={"200px"} height={20} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  if (!isLoading && !isError && data.data.conversation) {
+    contentHeader = (
       <div className={classes.header}>
         <div className={classes.visitorName}>
           <IconButton size="medium" aria-label="Close" onClick={handleBackArrow} className={classes.backArrow}>
             <KeyboardBackspaceIcon />
           </IconButton>
           <div>
-            <Chip size="small" label="Inactive" color="secondary" /> {conversationDetails.name}
+            {data.data.conversation.name}
             <div style={{fontSize: ".8em", fontWeight: "normal"}}>
-              {conversationDetails.email_address}
+              {data.data.conversation.email_address}
             </div>
           </div>
         </div>
@@ -249,17 +321,28 @@ function ConversationMain(props) {
           open={Boolean(anchorEl)}
           onClose={handleMenuClose}
         >
-          <MenuItem onClick={handleMenuClose}>Move to Closed</MenuItem>
-          <MenuItem onClick={handleMenuClose}>Delete Conversation</MenuItem>
+
+          {data.data.conversation.active === 1 && <MenuItem onClick={() => handleChangeStatus(0)}>Change Status to Closed</MenuItem>}
+          <MenuItem onClick={() => handleDelete(data.data.conversation.active)}>Delete Conversation</MenuItem>
         </Menu>
       </div>
+    );
+  }
+
+  return (
+    <div className={classes.conversationMain}>
+      {contentHeader}
       <div className={classes.conversationContainer}>
+        {!isLoading && !isError && data.data.conversation && <ConversationLog message={"Beginning of conversation"} sent={data.data.conversation.created} />}
         {messages}
+        {!isLoading && !isError && data.data.conversation.deactivated_timestamp && <ConversationLog message={"Conversation closed"} sent={data.data.conversation.deactivated_timestamp} />}
+        {!isLoading && !isError && data.data.conversation.sms_opt_in_timestamp && <ConversationLog message={data.data.conversation.name + " opted in for SMS contact - " + data.data.conversation.phone_number} sent={data.data.conversation.sms_opt_in_timestamp} />}
         <div style={{float: "left", clear: "both"}}
              ref={messagesEnd}>
         </div>
       </div>
-      <ComposeMessage sendMessage={sendMessage} />
+      {!isLoading && !isError && data.data.conversation.active === 1 && <ComposeMessage submittingAcceptConversation={submittingAcceptConversation} acceptConversation={acceptConversation} conversation={data.data.conversation} sendMessage={sendMessage} />}
+      {!isLoading && !isError && data.data.conversation.active === 0 && <ComposeMessageLocked />}
     </div>
   );
 }

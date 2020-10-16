@@ -10,7 +10,7 @@ import {SWRConfig} from "swr";
 import fetch from "unfetch";
 
 ReactDOM.render(
-  <React.StrictMode>
+  <React.Fragment>
     <CssBaseline />
     <Router>
       <Switch>
@@ -18,6 +18,7 @@ ReactDOM.render(
           <SWRConfig
             value={{
               refreshInterval: 0,
+              shouldRetryOnError: false,
               fetcher: (resource, init) => fetch(resource, init).then(res => res.json())
             }}
           >
@@ -29,7 +30,7 @@ ReactDOM.render(
         </Route>
       </Switch>
     </Router>
-  </React.StrictMode>,
+  </React.Fragment>,
   document.getElementById('root')
 );
 

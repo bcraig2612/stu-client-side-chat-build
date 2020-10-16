@@ -6,7 +6,8 @@ import Tab from "@material-ui/core/Tab";
 import {Link, useHistory} from "react-router-dom";
 import Skeleton from "@material-ui/lab/Skeleton";
 import moment from "moment";
-import Badge from "@material-ui/core/Badge";
+import QuestionAnswerIcon from '@material-ui/icons/QuestionAnswer';
+import NotificationImportantIcon from '@material-ui/icons/NotificationImportant';
 
 const useStyles = makeStyles((theme) => ({
   conversationList: {
@@ -69,6 +70,13 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
   },
   selectedConversation: {
+    background: "#eee",
+    color: "#333",
+    '&:hover': {
+      background: "#eee",
+    }
+  },
+  incomingConversation: {
     background: theme.palette.primary.main,
     color: "#fff",
     '&:hover': {
@@ -78,6 +86,8 @@ const useStyles = makeStyles((theme) => ({
   visitorName: {
     fontWeight: "bold",
     fontSize: "1.2em",
+    display: "flex",
+    alignItems: "center"
   },
   lastMessage: {
     overflowX: "hidden",
@@ -115,14 +125,15 @@ function ConversationList(props) {
     </React.Fragment>
   );
 
-  if (!props.conversationsLoading && !props.errorLoadingConversation) {
+  if (!props.conversationsLoading && !props.errorLoadingConversation && props.conversations.data.conversations.length) {
     conversations = props.conversations.data.conversations.map((conversation) => {
       const status = conversation.active ? 'open' : 'closed';
+      const accepted = (conversation.active !== 0 && conversation.accepted);
 
       // filter conversations based on status
-      // if (props.filter !== status) {
-      //   return false;
-      // }
+      if (props.filter !== status) {
+        return false;
+      }
 
       let classList = classes.listItem;
 
@@ -131,14 +142,23 @@ function ConversationList(props) {
         classList += ' ' + classes.selectedConversation;
       }
 
-      let sent = moment.utc(conversation.sent);
+      if (accepted === 0) {
+        classList += ' ' + classes.incomingConversation;
+      }
+
+      let sent = moment.unix(conversation.sent);
       sent = sent.local().calendar();
 
       return (
         <Link onClick={props.setMobileConversationListOpen} key={conversation.id} to={"/conversation/" + conversation.id + '?filter=' + status} className={classList}>
           <div className={classes.listItemTop}>
             <span className={classes.visitorName}>
-                {conversation.name}
+              {accepted === 0 && (
+                <React.Fragment>
+                  <NotificationImportantIcon /> Incoming
+                </React.Fragment>
+                )}
+              {(accepted === 1 || status === 'closed') && conversation.name}
             </span>
             <span className={classes.listItemSent}>
               {sent}
@@ -148,6 +168,19 @@ function ConversationList(props) {
         </Link>
       );
     });
+  }
+
+  if (!props.conversationsLoading && !props.errorLoadingConversation && !props.conversations.data.conversations.length) {
+    conversations = (
+      <div className={classes.noResultsContainer}>
+        {props.filter === "open" && (
+          <div style={{display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column"}}><QuestionAnswerIcon /> No Open Conversations.</div>
+        )}
+        {props.filter === "closed" && (
+          <div style={{display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column"}}><QuestionAnswerIcon /> No Closed Conversations.</div>
+        )}
+      </div>
+    );
   }
 
   if (!props.conversationsLoading && props.errorLoadingConversation) {

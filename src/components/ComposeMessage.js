@@ -2,6 +2,20 @@ import React, {useState} from 'react';
 import {makeStyles} from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
+import Pusher from "pusher-js";
+
+// connect to pusher
+// set up pusher
+Pusher.logToConsole = false;
+const pusher = new Pusher('66e7f1b4416d81db9385', {
+  cluster: 'us3',
+  authEndpoint: 'https://dev01.sotellus.com/API/chat/pusherAuthentication/',
+  auth: {
+    headers: {
+      Authorization: 'Bearer ' + localStorage.getItem('stu_jwt'),
+    }
+  }
+});
 
 const useStyles = makeStyles((theme) => ({
   composeMessageContainer: {
@@ -27,6 +41,8 @@ function ComposeMessage(props) {
 
   function handleChange(e) {
     setComposeMessageValue(e.target.value);
+    const channel = pusher.subscribe(props.conversation.channel_name);
+    channel.trigger('client-typing', { });
   }
 
   function sendMessage() {
@@ -39,7 +55,11 @@ function ComposeMessage(props) {
     setComposeMessageValue('');
   }
 
-  return (
+  function acceptConversation() {
+    props.acceptConversation(props.conversation.id);
+  }
+
+  let content = (
     <div className={classes.composeMessageContainer}>
       <TextField
         id="standard-multiline-flexible"
@@ -57,6 +77,18 @@ function ComposeMessage(props) {
       </div>
     </div>
   );
+
+  if (! props.conversation.accepted) {
+    content = (
+      <div className={classes.composeMessageContainer} style={{justifyContent: "center"}}>
+        <Button fullWidth={true} disabled={props.submittingAcceptConversation} variant="contained" color="primary" onClick={acceptConversation}>
+          Accept Conversation
+        </Button>
+      </div>
+    );
+  }
+
+  return content;
 }
 
 export default ComposeMessage;

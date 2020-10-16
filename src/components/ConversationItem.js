@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
 
 function ConversationItem(props) {
   const classes = useStyles(props);
-  let sent = moment.utc(props.message.sent);
+  let sent = moment.unix(props.message.sent);
   sent = sent.local().calendar();
 
   return (

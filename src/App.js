@@ -67,8 +67,6 @@ function App() {
 
   return (
     <SnackbarProvider maxSnack={1}>
-      {console.count('app')}
-
       <Layout>
         {content}
       </Layout>
