@@ -13,7 +13,13 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+    [theme.breakpoints.down('sm')]: {
+      height: "auto",
+      position: "fixed",
+      bottom: "0",
+      width: "100%"
+    },
   }
 }));
 
