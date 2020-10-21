@@ -8,7 +8,7 @@ export function useQuery() {
 }
 
 export function getJWT() {
-  localStorage.setItem('stu_jwt', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvc290ZWxsdXMuY29tIiwiYXVkIjoiaHR0cHM6XC9cL3NvdGVsbHVzLmNvbSIsImNsaWVudGlkIjoxMjEwLCJpc19jbGllbnRfY29udGFjdCI6MCwiY2hhbm5lbF9uYW1lIjoiY2hhbm5lbF9kZW1vIiwiY2xpZW50X2NvbnRhY3RfaWQiOmZhbHNlLCJleHAiOjE2MDMzMTk3OTd9.eQPsMdd6Iz2e7lZRplzh3rAvAeiyNWtAGa1d3mqUpvs');
+  localStorage.setItem('stu_jwt', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvc290ZWxsdXMuY29tIiwiYXVkIjoiaHR0cHM6XC9cL3NvdGVsbHVzLmNvbSIsImNsaWVudGlkIjoxMjEwLCJpc19jbGllbnRfY29udGFjdCI6MCwiY2hhbm5lbF9uYW1lIjoiY2hhbm5lbF9kZW1vIiwiY2xpZW50X2NvbnRhY3RfaWQiOmZhbHNlLCJleHAiOjE2MDMzMjIxOTh9.YSYMGGONIpU7HNnR5mp6PCoGD_UllTfRjUe6GSbAz1c');
   const token = localStorage.getItem('stu_jwt');
   if (token) {
     // return for use in Authorization header
