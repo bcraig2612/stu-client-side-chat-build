@@ -11,7 +11,13 @@ const useStyles = makeStyles((theme) => ({
     minHeight: "100px",
     borderTop: "1px solid rgb(228, 233, 240)",
     display: "flex",
-    flexDirection: "column"
+    flexDirection: "column",
+    [theme.breakpoints.down('sm')]: {
+      height: "127px",
+      position: "fixed",
+      bottom: "0",
+      width: "100%"
+    },
   },
   composeActions: {
     marginTop: "10px",

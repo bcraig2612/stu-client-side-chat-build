@@ -48,6 +48,11 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "space-between",
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(2),
+    [theme.breakpoints.down('sm')]: {
+      height: "64px",
+      position: "fixed",
+      width: "100%"
+    },
   },
   visitorName: {
     fontWeight: "bold",
@@ -59,6 +64,10 @@ const useStyles = makeStyles((theme) => ({
     flex: "1",
     overflowY: "scroll",
     padding: theme.spacing(2),
+    [theme.breakpoints.down('sm')]: {
+      marginTop: "64px",
+      marginBottom: "127px"
+    },
   },
   skeletonItem: {
     display: "flex",
