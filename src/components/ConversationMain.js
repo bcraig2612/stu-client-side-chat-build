@@ -54,6 +54,7 @@ const useStyles = makeStyles((theme) => ({
       position: "fixed",
       width: "100%"
     },
+    zIndex: "1000"
   },
   visitorName: {
     fontWeight: "bold",
