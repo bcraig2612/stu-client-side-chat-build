@@ -34,7 +34,10 @@ const useStyles = makeStyles((theme) => ({
     flex: "1",
     display: "flex",
     flexDirection: "column",
-    backgroundColor: "#fff"
+    backgroundColor: "#fff",
+    [theme.breakpoints.down('sm')]: {
+      maxHeight: "100vh"
+    },
   },
   header: {
     display: "flex",
