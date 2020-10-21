@@ -18,6 +18,7 @@ const useStyles = makeStyles((theme) => ({
       bottom: "0",
       width: "100%"
     },
+    zIndex: "1000"
   },
   composeActions: {
     marginTop: "10px",

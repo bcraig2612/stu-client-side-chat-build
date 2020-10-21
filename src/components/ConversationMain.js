@@ -70,6 +70,7 @@ const useStyles = makeStyles((theme) => ({
       marginTop: "64px",
       marginBottom: "127px"
     },
+    zIndex: "100"
   },
   skeletonItem: {
     display: "flex",
