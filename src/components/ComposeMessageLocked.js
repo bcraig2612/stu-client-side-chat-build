@@ -20,6 +20,7 @@ const useStyles = makeStyles((theme) => ({
       bottom: "0",
       width: "100%"
     },
+    zIndex: "1000"
   }
 }));
 
