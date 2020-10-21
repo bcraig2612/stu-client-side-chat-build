@@ -2,20 +2,6 @@ import React, {useState} from 'react';
 import {makeStyles} from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import Pusher from "pusher-js";
-
-// connect to pusher
-// set up pusher
-Pusher.logToConsole = false;
-const pusher = new Pusher('66e7f1b4416d81db9385', {
-  cluster: 'us3',
-  authEndpoint: 'https://dev01.sotellus.com/API/chat/pusherAuthentication/',
-  auth: {
-    headers: {
-      Authorization: 'Bearer ' + localStorage.getItem('stu_jwt'),
-    }
-  }
-});
 
 const useStyles = makeStyles((theme) => ({
   composeMessageContainer: {
@@ -38,11 +24,17 @@ function ComposeMessage(props) {
   const classes = useStyles();
   const [composeMessageValue, setComposeMessageValue] = useState('');
   const [sendDisabled, setSendDisabled] = useState(false);
+  const [typingIndicatorDisabled, setTypingIndicatorDisabled] = useState(false);
 
   function handleChange(e) {
     setComposeMessageValue(e.target.value);
-    const channel = pusher.subscribe(props.conversation.channel_name);
-    channel.trigger('client-typing', { });
+    if (typingIndicatorDisabled === false) {
+      props.triggerTypingEvent();
+      setTypingIndicatorDisabled(true);
+      setTimeout(() => {
+        setTypingIndicatorDisabled(false);
+      }, 4000)
+    }
   }
 
   function sendMessage() {

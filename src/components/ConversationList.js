@@ -7,7 +7,10 @@ import {Link, useHistory} from "react-router-dom";
 import Skeleton from "@material-ui/lab/Skeleton";
 import moment from "moment";
 import QuestionAnswerIcon from '@material-ui/icons/QuestionAnswer';
+import ForumIcon from '@material-ui/icons/Forum';
 import NotificationImportantIcon from '@material-ui/icons/NotificationImportant';
+import Badge from "@material-ui/core/Badge";
+import DoneIcon from '@material-ui/icons/Done';
 
 const useStyles = makeStyles((theme) => ({
   conversationList: {
@@ -104,6 +107,13 @@ const useStyles = makeStyles((theme) => ({
   noResultsContainer: {
     textAlign: "center",
     padding: "20px"
+  },
+  tabContent: {
+    display: "flex",
+    flexDirection: "row"
+  },
+  tabLabel: {
+    marginRight: "5px"
   }
 }));
 
@@ -177,7 +187,7 @@ function ConversationList(props) {
           <div style={{display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column"}}><QuestionAnswerIcon /> No Open Conversations.</div>
         )}
         {props.filter === "closed" && (
-          <div style={{display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column"}}><QuestionAnswerIcon /> No Closed Conversations.</div>
+          <div style={{display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column"}}><DoneIcon /> No Closed Conversations.</div>
         )}
       </div>
     );
@@ -224,8 +234,18 @@ function ConversationList(props) {
           variant="fullWidth"
           onChange={filterChange}
         >
-          <Tab label="Open" value="open" />
-          <Tab label="Closed" value="closed" />
+          <Tab label={(
+            <div className={classes.tabContent}>
+              <span className={classes.tabLabel}>Open</span>
+              <Badge badgeContent={4} color="primary" max={99}><ForumIcon /></Badge>
+            </div>
+          )} value="open" />
+          <Tab label={(
+            <div className={classes.tabContent}>
+              <span className={classes.tabLabel}>Closed</span>
+              <DoneIcon />
+            </div>
+          )} value="closed" />
         </Tabs>
       </Paper>
 

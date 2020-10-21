@@ -20,10 +20,12 @@ import {mutate} from "swr";
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
-import Chip from "@material-ui/core/Chip";
+import notificationMP3 from "../notification.mp3";
 import {useHistory} from "react-router-dom";
 import ComposeMessageLocked from "./ComposeMessageLocked";
 import ConversationLog from "./ConversationLog";
+import TypingIndicator from "./TypingIndicator";
+import ContactAvatar from "./ContactAvatar";
 
 const apiURL = 'https://dev01.sotellus.com/API/chat/';
 
@@ -107,6 +109,15 @@ const pusher = new Pusher('66e7f1b4416d81db9385', {
   }
 });
 
+// play alert sound
+function newMessageAlert() {
+  const audio = new Audio(notificationMP3);
+  window.focus();
+  audio.play().catch((err) => {
+    console.log(err);
+  });
+}
+
 function ConversationMain(props) {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
@@ -117,18 +128,56 @@ function ConversationMain(props) {
   // reference for end of message container
   const messagesEnd = useRef(null);
   const [submittingAcceptConversation, setSubmittingAcceptConversation] = useState(false);
+  const [showTypingIndicator, setShowTypingIndicator] = useState(false);
+  const [contactIsOnline, setContactIsOnline] = useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   useEffect(() => {
     if (data && data.data.conversation) {
       const channel = pusher.subscribe(data.data.conversation.channel_name);
       channel.unbind('new-message');
+      channel.unbind('client-typing');
 
-      // new incoming messages
+      channel.bind('pusher:subscription_succeeded', function() {
+        if (channel.members && channel.members.count === 2) {
+          setContactIsOnline(data.data.conversation.id);
+        } else {
+          setContactIsOnline(false);
+        }
+      });
+
+      channel.bind('pusher:member_added', function(member) {
+        if (channel.members && channel.members.count === 2) {
+          setContactIsOnline(data.data.conversation.id);
+        } else {
+          setContactIsOnline(false);
+        }
+      });
+
+      channel.bind('pusher:member_removed', function(member) {
+        if (channel.members && channel.members.count === 2) {
+          setContactIsOnline(data.data.conversation.id);
+        } else {
+          setContactIsOnline(false);
+        }
+      });
+
+        // new incoming messages
       channel.bind('new-message', function (message) {
+        if (message.sent_by_contact) {
+          newMessageAlert();
+        }
+        setShowTypingIndicator(false);
         mutate(() => props.selectedConversation ? 'messages/?conversationID=' + props.selectedConversation : null, previousData => {
           return {...previousData, data: {conversation: previousData.data.conversation, messages: [...previousData.data.messages, message]}}
         }, false);
+      });
+
+      channel.bind('client-typing', function(data) {
+        setShowTypingIndicator(data.id);
+        setTimeout(() => {
+          setShowTypingIndicator(false);
+        }, 4000);
       });
     }
   }, [data]);
@@ -137,12 +186,44 @@ function ConversationMain(props) {
     if (data && data.data.conversation) {
       // subscribe to inbox notifications
       const channel = pusher.subscribe(data.data.conversation.channel_name);
+      channel.unbind('new-message');
+      channel.unbind('client-typing');
+
+      if (channel.members && channel.members.count === 2) {
+        setContactIsOnline(data.data.conversation.id);
+      } else {
+        setContactIsOnline(false);
+      }
+
+      channel.bind('pusher:member_added', function(member) {
+        if (channel.members && channel.members.count === 2) {
+          setContactIsOnline(data.data.conversation.id);
+        } else {
+          setContactIsOnline(false);
+        }
+      });
+
+      channel.bind('pusher:member_removed', function(member) {
+        if (channel.members && channel.members.count === 2) {
+          setContactIsOnline(data.data.conversation.id);
+        } else {
+          setContactIsOnline(false);
+        }
+      });
 
       // new incoming messages
       channel.bind('new-message', function(message) {
+        setShowTypingIndicator(false);
         mutate(() => props.selectedConversation ? 'messages/?conversationID=' + props.selectedConversation : null,  previousData => {
           return {...previousData, data: { conversation: previousData.data.conversation, messages: [...previousData.data.messages, message]} }
         }, false);
+      });
+
+      channel.bind('client-typing', function(data) {
+        setShowTypingIndicator(data.id);
+        setTimeout(() => {
+          setShowTypingIndicator(false);
+        }, 4000);
       });
     }
   }, [props.selectedConversation]);
@@ -160,6 +241,11 @@ function ConversationMain(props) {
 
   const handleMenuClose = () => {
     setAnchorEl(null);
+  };
+
+  const triggerTypingEvent = () => {
+    const channel = pusher.subscribe(data.data.conversation.channel_name);
+    channel.trigger('client-typing', { });
   };
 
   const handleChangeStatus = (active) => {
@@ -182,6 +268,7 @@ function ConversationMain(props) {
       const filter = active ? 'open' : 'closed';
       history.push('/conversation/?filter=' + filter);
       mutate('conversations/?filter=' + filter);
+      displaySuccess('Conversation deleted.');
     })
       .catch(() => {
         displayError('Error deleting conversation.');
@@ -218,9 +305,9 @@ function ConversationMain(props) {
       });
   }
 
-  function handleStatusChange() {
-    const variant = 'error';
-    enqueueSnackbar('Could not load conversation.', { variant });
+  function displaySuccess(message) {
+    const variant = 'success';
+    enqueueSnackbar(message, { variant });
   }
 
   function displayError(message) {
@@ -271,7 +358,7 @@ function ConversationMain(props) {
         <div className={classes.infoBoxContainer}>
           <div className={classes.infoBox}>
             <h1>When visitors on your site start a chat, you'll see it here!</h1>
-            <Button variant="outlined" color="primary" href="#outlined-buttons">
+            <Button variant="outlined" color="primary" href="http://support.sotellus.com/support/solutions" target="_blank">
               Support center
             </Button>
           </div>
@@ -303,6 +390,7 @@ function ConversationMain(props) {
           <IconButton size="medium" aria-label="Close" onClick={handleBackArrow} className={classes.backArrow}>
             <KeyboardBackspaceIcon />
           </IconButton>
+          <ContactAvatar online={data.data.conversation.id === contactIsOnline} name={data.data.conversation.name} />
           <div>
             {data.data.conversation.name}
             <div style={{fontSize: ".8em", fontWeight: "normal"}}>
@@ -323,7 +411,7 @@ function ConversationMain(props) {
         >
 
           {data.data.conversation.active === 1 && <MenuItem onClick={() => handleChangeStatus(0)}>Change Status to Closed</MenuItem>}
-          <MenuItem onClick={() => handleDelete(data.data.conversation.active)}>Delete Conversation</MenuItem>
+          {data.data.conversation.active === 0 && <MenuItem onClick={() => handleDelete(data.data.conversation.active)}>Delete Conversation</MenuItem>}
         </Menu>
       </div>
     );
@@ -335,13 +423,14 @@ function ConversationMain(props) {
       <div className={classes.conversationContainer}>
         {!isLoading && !isError && data.data.conversation && <ConversationLog message={"Beginning of conversation"} sent={data.data.conversation.created} />}
         {messages}
+        {showTypingIndicator == props.selectedConversation && <TypingIndicator />}
         {!isLoading && !isError && data.data.conversation.deactivated_timestamp && <ConversationLog message={"Conversation closed"} sent={data.data.conversation.deactivated_timestamp} />}
         {!isLoading && !isError && data.data.conversation.sms_opt_in_timestamp && <ConversationLog message={data.data.conversation.name + " opted in for SMS contact - " + data.data.conversation.phone_number} sent={data.data.conversation.sms_opt_in_timestamp} />}
         <div style={{float: "left", clear: "both"}}
              ref={messagesEnd}>
         </div>
       </div>
-      {!isLoading && !isError && data.data.conversation.active === 1 && <ComposeMessage submittingAcceptConversation={submittingAcceptConversation} acceptConversation={acceptConversation} conversation={data.data.conversation} sendMessage={sendMessage} />}
+      {!isLoading && !isError && data.data.conversation.active === 1 && <ComposeMessage triggerTypingEvent={triggerTypingEvent} submittingAcceptConversation={submittingAcceptConversation} acceptConversation={acceptConversation} conversation={data.data.conversation} sendMessage={sendMessage} />}
       {!isLoading && !isError && data.data.conversation.active === 0 && <ComposeMessageLocked />}
     </div>
   );
