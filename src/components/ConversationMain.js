@@ -115,7 +115,7 @@ const useStyles = makeStyles((theme) => ({
 // connect to pusher
 // set up pusher
 Pusher.logToConsole = false;
-const pusher = new Pusher('66e7f1b4416d81db9385', {
+const pusher = new Pusher('a3105b52df63262dc19e', {
   cluster: 'us3',
   authEndpoint: 'https://dev01.sotellus.com/API/chat/pusherAuthentication/',
   auth: {

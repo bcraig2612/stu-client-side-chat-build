@@ -9,7 +9,6 @@ import {useGetConversations, useQuery} from "./customHooks";
 import ConversationList from './components/ConversationList';
 import Layout from "./components/Layout";
 import ConversationMain from "./components/ConversationMain";
-import Alert from "@material-ui/lab/Alert";
 
 function App() {
   let query = useQuery();
@@ -30,7 +29,7 @@ function App() {
     // connect to pusher
     // set up pusher
     Pusher.logToConsole = true;
-    const pusher = new Pusher('66e7f1b4416d81db9385', {
+    const pusher = new Pusher('a3105b52df63262dc19e', {
       cluster: 'us3'
     });
 
