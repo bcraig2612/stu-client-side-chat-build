@@ -34,10 +34,6 @@ function ComposeMessage(props) {
   const [typingIndicatorDisabled, setTypingIndicatorDisabled] = useState(false);
 
   function handleChange(e) {
-    if (e.key === 'Enter' || e.keyCode === 13) {
-      sendMessage();
-      return;
-    }
     setComposeMessageValue(e.target.value);
     if (typingIndicatorDisabled === false) {
       props.triggerTypingEvent();
@@ -49,13 +45,20 @@ function ComposeMessage(props) {
   }
 
   function sendMessage() {
-    if (composeMessageValue === '' || composeMessageValue.trim().length < 1) {
+    if (composeMessageValue.trim().length < 1) {
       return false;
     }
     setSendDisabled(true);
     setTimeout(() => setSendDisabled(false), 1000);
     props.sendMessage(composeMessageValue);
     setComposeMessageValue('');
+  }
+
+  function handleKeyDown(e) {
+    if (e.keyCode == 13 && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
   }
 
   function acceptConversation() {
@@ -72,6 +75,7 @@ function ComposeMessage(props) {
         rowsMax={4}
         value={composeMessageValue}
         onChange={handleChange}
+        onKeyDown={handleKeyDown}
       />
       <div className={classes.composeActions}>
         <Button disabled={sendDisabled} variant="contained" color="primary" onClick={sendMessage}>
