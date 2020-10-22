@@ -106,7 +106,7 @@ const useStyles = makeStyles((theme) => ({
   },
   backArrow: {
     marginRight: "10px",
-    [theme.breakpoints.up('xs')]: {
+    [theme.breakpoints.up('sm')]: {
       display: "none"
     },
   }
