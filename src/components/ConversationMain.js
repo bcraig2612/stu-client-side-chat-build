@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     backgroundColor: "#fff",
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('xs')]: {
       height: "100vh",
       maxHeight: "100vh",
     },
@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "space-between",
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(2),
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('xs')]: {
       height: "64px",
       position: "fixed",
       width: "100%"
@@ -66,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
     flex: "1",
     overflowY: "scroll",
     padding: theme.spacing(2),
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('xs')]: {
       marginTop: "64px",
       marginBottom: "127px"
     },
@@ -106,7 +106,7 @@ const useStyles = makeStyles((theme) => ({
   },
   backArrow: {
     marginRight: "10px",
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up('xs')]: {
       display: "none"
     },
   }

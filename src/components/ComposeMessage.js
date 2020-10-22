@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
     borderTop: "1px solid rgb(228, 233, 240)",
     display: "flex",
     flexDirection: "column",
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('xs')]: {
       height: "127px",
       position: "fixed",
       bottom: "0",
