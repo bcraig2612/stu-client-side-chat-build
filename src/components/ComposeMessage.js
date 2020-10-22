@@ -45,7 +45,7 @@ function ComposeMessage(props) {
   }
 
   function sendMessage() {
-    if (composeMessageValue === '' || composeMessageValue.length < 1) {
+    if (composeMessageValue === '' || composeMessageValue.trim().length < 1) {
       return false;
     }
     setSendDisabled(true);
