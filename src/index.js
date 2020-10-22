@@ -4,6 +4,7 @@ import {
   BrowserRouter as Router, Redirect, Route, Switch,
 } from "react-router-dom";
 import App from './App';
+import Auth from './components/Auth';
 import * as serviceWorker from './serviceWorker';
 import CssBaseline from "@material-ui/core/CssBaseline";
 import {SWRConfig} from "swr";
@@ -14,6 +15,17 @@ ReactDOM.render(
     <CssBaseline />
     <Router>
       <Switch>
+        <Route path="/auth/:authCode">
+          <SWRConfig
+            value={{
+              refreshInterval: 0,
+              shouldRetryOnError: true,
+              fetcher: (resource, init) => fetch(resource, init).then(res => res.json())
+            }}
+          >
+          <Auth />
+          </SWRConfig>
+        </Route>
         <Route path={["/conversation/:conversationID", "/conversation"]}>
           <SWRConfig
             value={{

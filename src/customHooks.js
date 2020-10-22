@@ -7,8 +7,11 @@ export function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
+export function setJWT(jwt) {
+  localStorage.setItem('stu_jwt', jwt);
+}
+
 export function getJWT() {
-  localStorage.setItem('stu_jwt', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvc290ZWxsdXMuY29tIiwiYXVkIjoiaHR0cHM6XC9cL3NvdGVsbHVzLmNvbSIsImNsaWVudGlkIjoxMjEwLCJpc19jbGllbnRfY29udGFjdCI6MCwiY2hhbm5lbF9uYW1lIjoiY2hhbm5lbF9kZW1vIiwiY2xpZW50X2NvbnRhY3RfaWQiOmZhbHNlLCJleHAiOjE2MDMzODg0NjJ9.YW3t4d7DwD8v976su_akzVDodNinrQ0pQKIyz8gccOQ');
   const token = localStorage.getItem('stu_jwt');
   if (token) {
     // return for use in Authorization header
@@ -159,6 +162,34 @@ export function useGetConversations(filter) {
 
 
   const { data, error } = useSWR('conversations/?filter=' + filter, fetcher);
+
+  return {
+    data: data,
+    isLoading: !error && !data,
+    isError: error
+  };
+}
+
+export function useGetAuth(authCode) {
+  const fetcher = async url => {
+    const res = await fetch(apiURL + 'auth/', {
+      method: "POST",
+      body: JSON.stringify({'authCode': authCode})
+    })
+    // If the status code is not in the range 200-299,
+    // we still try to parse and throw it.
+    if (!res.ok) {
+      const error = new Error('An error occurred while fetching the data.')
+      // Attach extra info to the error object.
+      error.info = await res.json()
+      error.status = res.status
+      throw error
+    }
+    return await res.json()
+  }
+
+
+  const { data, error } = useSWR('authCode/?authCode=' + authCode, fetcher);
 
   return {
     data: data,
