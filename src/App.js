@@ -43,6 +43,7 @@ function App() {
     // new conversation notifications
     channel.bind('new-conversation', function(data) {
       history.push('/conversation/' + data.id + '?filter=open');
+      setSelectedConversation(data.id);
     });
   }, []);
 
