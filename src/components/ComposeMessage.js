@@ -55,6 +55,7 @@ function ComposeMessage(props) {
   }
 
   function handleKeyUp(e) {
+    e.preventDefault();
     if (e.key === 'Enter' || e.keyCode === 13) {
       sendMessage();
     }
