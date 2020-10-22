@@ -54,6 +54,12 @@ function ComposeMessage(props) {
     setComposeMessageValue('');
   }
 
+  function handleKeyUp(e) {
+    if (e.key === 'Enter' || e.keyCode === 13) {
+      sendMessage();
+    }
+  }
+
   function acceptConversation() {
     props.acceptConversation(props.conversation.id);
   }
@@ -68,6 +74,7 @@ function ComposeMessage(props) {
         rowsMax={4}
         value={composeMessageValue}
         onChange={handleChange}
+        onKeyUp{handleKeyUp}
       />
       <div className={classes.composeActions}>
         <Button disabled={sendDisabled} variant="contained" color="primary" onClick={sendMessage}>
