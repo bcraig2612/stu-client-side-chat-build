@@ -74,7 +74,7 @@ function ComposeMessage(props) {
         rowsMax={4}
         value={composeMessageValue}
         onChange={handleChange}
-        onKeyUp{handleKeyUp}
+        onKeyUp={handleKeyUp}
       />
       <div className={classes.composeActions}>
         <Button disabled={sendDisabled} variant="contained" color="primary" onClick={sendMessage}>
