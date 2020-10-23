@@ -58,7 +58,7 @@ function ConversationItem(props) {
   if (props.conversation && props.conversation.email_opt_in) {
     body = (
       <React.Fragment>
-        {props.conversation.name} wants you to email them! Click the link or copy their email address: <Link href={"mailto:" + props.conversation.phone_number}>{props.conversation.phone_number}</Link>
+        {props.conversation.name} wants you to email them! Click the link or copy their email address: <Link href={"mailto:" + props.conversation.email_address}>{props.conversation.email_address}</Link>
       </React.Fragment>
     );
   }
