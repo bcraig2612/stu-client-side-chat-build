@@ -1,6 +1,6 @@
 import React from 'react';
-import {useParams, useHistory, useLocation} from "react-router-dom";
-import {useGetAuth, setJWT, useQuery} from "../customHooks";
+import {useParams, useHistory} from "react-router-dom";
+import {useGetAuth, setJWT, useQuery, useCheckJWT} from "../customHooks";
 import {makeStyles} from "@material-ui/core/styles";
 import logo from '../soTellUs.png';
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -23,10 +23,11 @@ export default function Auth() {
   let { authCode } = useParams();
   let query = useQuery();
   const conversationID = query.get('conversationID') ? query.get('conversationID') : '';
-  const queryFilter = query.get('filter') ? query.get('filter') : 'open';
 
   let history = useHistory();
   const {data, isLoading, isError} = useGetAuth(authCode);
+  const {data: checkJWTData, isLoading: checkJWTLoading, isError: checkJWTError} = useCheckJWT();
+
   const classes = useStyles();
 
   if (isLoading) {
@@ -39,6 +40,13 @@ export default function Auth() {
   }
 
   if (isError) {
+    if (checkJWTData) {
+      let link = "/conversation";
+      if (conversationID) {
+        link += "/" + conversationID;
+      }
+      history.push(link);
+    }
     return (
       <div className={classes.authContainer}>
         <img style={{marginBottom: "10px"}} src={logo} alt="Logo" width="100px" />
