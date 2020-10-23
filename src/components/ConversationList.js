@@ -8,7 +8,7 @@ import Skeleton from "@material-ui/lab/Skeleton";
 import moment from "moment";
 import QuestionAnswerIcon from '@material-ui/icons/QuestionAnswer';
 import ForumIcon from '@material-ui/icons/Forum';
-import NotificationImportantIcon from '@material-ui/icons/NotificationImportant';
+import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 import Badge from "@material-ui/core/Badge";
 import DoneIcon from '@material-ui/icons/Done';
 
@@ -63,6 +63,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     color: "#333",
     textDecoration: "none",
+    justifyContent: "center",
     '&:hover': {
       background: "rgb(244, 246, 249)"
     }
@@ -103,6 +104,18 @@ const useStyles = makeStyles((theme) => ({
   },
   listItemSent: {
     fontSize: ".9em"
+  },
+  listItemWrapper: {
+    display: "flex",
+  },
+  listItemContent: {
+    flex: 1
+  },
+  listItemRinging: {
+    flexBasis: "50px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
   },
   noResultsContainer: {
     textAlign: "center",
@@ -161,20 +174,24 @@ function ConversationList(props) {
 
       return (
         <Link onClick={props.setMobileConversationListOpen} key={conversation.id} to={"/conversation/" + conversation.id + '?filter=' + status} className={classList}>
-          <div className={classes.listItemTop}>
-            <span className={classes.visitorName}>
-              {accepted === 0 && (
-                <React.Fragment>
-                  <NotificationImportantIcon /> Incoming
-                </React.Fragment>
-                )}
-              {(accepted === 1 || status === 'closed') && conversation.name}
-            </span>
-            <span className={classes.listItemSent}>
-              {sent}
-            </span>
+          <div className={classes.listItemWrapper}>
+            {accepted === 0 && (
+              <div className={classes.listItemRinging}>
+                <NotificationsActiveIcon />
+              </div>
+            )}
+            <div className={classes.listItemContent}>
+              <div className={classes.listItemTop}>
+                <span className={classes.visitorName}>
+                  {(accepted === 1 || status === 'closed') && conversation.name}
+                </span>
+                <span className={classes.listItemSent}>
+                  {sent}
+                </span>
+              </div>
+              <div className={classes.lastMessage}>{conversation.body}</div>
+            </div>
           </div>
-          <div className={classes.lastMessage}>{conversation.body}</div>
         </Link>
       );
     });
