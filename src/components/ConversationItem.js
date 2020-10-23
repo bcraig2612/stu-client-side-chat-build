@@ -42,7 +42,7 @@ function ConversationItem(props) {
   if (props.conversation) {
     body = (
       <React.Fragment>
-        {props.conversation.name} opted in for SMS contact - <Link href={"tel:" + props.conversation.phone_number}>{props.conversation.phone_number}</Link>
+        {props.conversation.name} opted in for SMS contact - <Link href={"sms:" + props.conversation.phone_number}>{props.conversation.phone_number}</Link>
       </React.Fragment>
     );
   }
