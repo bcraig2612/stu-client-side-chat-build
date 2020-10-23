@@ -39,10 +39,26 @@ function ConversationItem(props) {
 
   let body = props.message.body;
 
-  if (props.conversation) {
+  if (props.conversation && props.conversation.sms_opt_in) {
     body = (
       <React.Fragment>
         {props.conversation.name} wants you to send them a text message! Click the link or copy their phone number: <Link href={"sms:" + props.conversation.phone_number}>{props.conversation.phone_number}</Link>
+      </React.Fragment>
+    );
+  }
+
+  if (props.conversation && props.conversation.call_opt_in) {
+    body = (
+      <React.Fragment>
+        {props.conversation.name} wants you to call them! Click the link or copy their phone number: <Link href={"tel:" + props.conversation.phone_number}>{props.conversation.phone_number}</Link>
+      </React.Fragment>
+    );
+  }
+
+  if (props.conversation && props.conversation.email_opt_in) {
+    body = (
+      <React.Fragment>
+        {props.conversation.name} wants you to email them! Click the link or copy their email address: <Link href={"mailto:" + props.conversation.phone_number}>{props.conversation.phone_number}</Link>
       </React.Fragment>
     );
   }

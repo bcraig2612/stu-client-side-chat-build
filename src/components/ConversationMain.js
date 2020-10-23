@@ -439,11 +439,11 @@ function ConversationMain(props) {
         {!isLoading && !isError && data.data.conversation && <ConversationLog message={"Beginning of conversation"} sent={data.data.conversation.created} />}
         {messages}
         {showTypingIndicator == props.selectedConversation && <TypingIndicator />}
-        {!isLoading && !isError && data.data.conversation.sms_opt_in_timestamp && (
+        {!isLoading && !isError && data.data.conversation.contact_opt_in_timestamp && (
           <ConversationItem
             conversation={data.data.conversation}
             message={{
-              sent: data.data.conversation.sms_opt_in_timestamp,
+              sent: data.data.conversation.contact_opt_in_timestamp,
               sent_by_contact: 1
             }}
           />
