@@ -26,6 +26,7 @@ import ComposeMessageLocked from "./ComposeMessageLocked";
 import ConversationLog from "./ConversationLog";
 import TypingIndicator from "./TypingIndicator";
 import ContactAvatar from "./ContactAvatar";
+import Link from "@material-ui/core/Link";
 
 const useStyles = makeStyles((theme) => ({
   conversationMain: {
@@ -438,8 +439,16 @@ function ConversationMain(props) {
         {!isLoading && !isError && data.data.conversation && <ConversationLog message={"Beginning of conversation"} sent={data.data.conversation.created} />}
         {messages}
         {showTypingIndicator == props.selectedConversation && <TypingIndicator />}
+        {!isLoading && !isError && data.data.conversation.sms_opt_in_timestamp && (
+          <ConversationItem
+            conversation={data.data.conversation}
+            message={{
+              sent: data.data.conversation.sms_opt_in_timestamp,
+              sent_by_contact: 1
+            }}
+          />
+        )}
         {!isLoading && !isError && data.data.conversation.deactivated_timestamp && <ConversationLog message={"Conversation closed"} sent={data.data.conversation.deactivated_timestamp} />}
-        {!isLoading && !isError && data.data.conversation.sms_opt_in_timestamp && <ConversationLog message={data.data.conversation.name + " opted in for SMS contact - " + data.data.conversation.phone_number} sent={data.data.conversation.sms_opt_in_timestamp} />}
         <div style={{float: "left", clear: "both"}}
              ref={messagesEnd}>
         </div>

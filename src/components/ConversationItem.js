@@ -1,6 +1,7 @@
 import React from 'react';
 import {makeStyles} from "@material-ui/core/styles";
 import moment from "moment";
+import Link from "@material-ui/core/Link";
 
 const useStyles = makeStyles((theme) => ({
   conversationItem: props => ({
@@ -36,9 +37,19 @@ function ConversationItem(props) {
   let sent = moment.unix(props.message.sent);
   sent = sent.local().calendar();
 
+  let body = props.message.body;
+
+  if (props.conversation) {
+    body = (
+      <React.Fragment>
+        {props.conversation.name} opted in for SMS contact - <Link href={"tel:" + props.conversation.phone_number}>{props.conversation.phone_number}</Link>
+      </React.Fragment>
+    );
+  }
+
   return (
     <div className={classes.conversationItem}>
-      <div className={classes.bubble}>{props.message.body}</div>
+      <div className={classes.bubble}>{body}</div>
       <div className={classes.timeStamp}>{sent}</div>
     </div>
   );
