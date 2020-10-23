@@ -1,7 +1,7 @@
 import {useLocation} from "react-router-dom";
 import useSWR from "swr";
 
-const apiURL = process.env.API_URL;
+const apiURL = process.env.REACT_APP_API_URL;
 
 export function useQuery() {
   return new URLSearchParams(useLocation().search);
