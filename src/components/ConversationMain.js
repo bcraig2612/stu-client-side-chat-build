@@ -27,8 +27,6 @@ import ConversationLog from "./ConversationLog";
 import TypingIndicator from "./TypingIndicator";
 import ContactAvatar from "./ContactAvatar";
 
-const apiURL = 'https://dev01.sotellus.com/API/chat/';
-
 const useStyles = makeStyles((theme) => ({
   conversationMain: {
     flex: "1",

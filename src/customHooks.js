@@ -1,7 +1,7 @@
 import {useLocation} from "react-router-dom";
 import useSWR from "swr";
 
-const apiURL = 'https://dev01.sotellus.com/API/chat/';
+const apiURL = process.env.API_URL;
 
 export function useQuery() {
   return new URLSearchParams(useLocation().search);
