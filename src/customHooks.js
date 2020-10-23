@@ -201,14 +201,6 @@ export function useGetAuth(authCode) {
 export function useCheckJWT() {
   const token = localStorage.getItem('stu_jwt');
 
-  if (!token) {
-    return {
-      data: false,
-      isLoading: false,
-      isError: true
-    };
-  }
-
   const fetcher = async url => {
     const res = await fetch(apiURL + 'checkJWT/', {
       method: "GET",
