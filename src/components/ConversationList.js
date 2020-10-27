@@ -254,7 +254,7 @@ function ConversationList(props) {
           <Tab label={(
             <div className={classes.tabContent}>
               <span className={classes.tabLabel}>Open</span>
-              <Badge badgeContent={4} color="primary" max={99}><ForumIcon /></Badge>
+              <Badge badgeContent={0} color="primary" max={99}><ForumIcon /></Badge>
             </div>
           )} value="open" />
           <Tab label={(
