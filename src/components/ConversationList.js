@@ -183,7 +183,7 @@ function ConversationList(props) {
             <div className={classes.listItemContent}>
               <div className={classes.listItemTop}>
                 <span className={classes.visitorName}>
-                  {(accepted === 1 || status === 'closed') && conversation.name}
+                  {conversation.name}
                 </span>
                 <span className={classes.listItemSent}>
                   {sent}
