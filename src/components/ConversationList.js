@@ -60,6 +60,7 @@ const useStyles = makeStyles((theme) => ({
   },
   listItem: {
     padding: "14px",
+    minHeight: "72px",
     display: "flex",
     flexDirection: "column",
     color: "#333",
