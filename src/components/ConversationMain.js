@@ -356,7 +356,7 @@ function ConversationMain(props) {
     return (
       <div className={classes.conversationMain}>
         <div className={classes.header}>
-          <div className={classes.visitorName}>
+          <div className={classes.visitorName} style={{alignItems: "center"}}>
             <IconButton size="medium" aria-label="Close" onClick={handleBackArrow} className={classes.backArrow}>
               <KeyboardBackspaceIcon />
             </IconButton>
