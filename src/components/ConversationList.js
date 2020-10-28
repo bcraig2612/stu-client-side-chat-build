@@ -11,7 +11,7 @@ import ForumIcon from '@material-ui/icons/Forum';
 import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 import Badge from "@material-ui/core/Badge";
 import DoneIcon from '@material-ui/icons/Done';
-import {useGetConversations, useGetUnreadMessageCount} from "../customHooks";
+import {useGetUnreadMessageCount} from "../customHooks";
 
 const useStyles = makeStyles((theme) => ({
   conversationList: {

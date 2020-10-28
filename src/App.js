@@ -9,6 +9,23 @@ import {useGetConversations, useQuery} from "./customHooks";
 import ConversationList from './components/ConversationList';
 import Layout from "./components/Layout";
 import ConversationMain from "./components/ConversationMain";
+import {mutate} from "swr";
+import newConversationMP3 from "./new-conversation.mp3";
+import notificationMP3 from "./notification.mp3";
+
+// play alert sound
+function newMessageAlert(conversationAlert) {
+  let audio;
+  if (conversationAlert) {
+    audio = new Audio(newConversationMP3);
+  } else {
+    audio = new Audio(notificationMP3);
+  }
+  window.focus();
+  audio.play().catch((err) => {
+    console.log(err);
+  });
+}
 
 function App() {
   let query = useQuery();
@@ -26,8 +43,6 @@ function App() {
   }, [queryFilter]);
 
   useEffect(() => {
-    // connect to pusher
-    // set up pusher
     Pusher.logToConsole = true;
     const pusher = new Pusher('a3105b52df63262dc19e', {
       cluster: 'us3'
@@ -38,12 +53,19 @@ function App() {
     }
 
     // subscribe to inbox notifications
-    let channel = pusher.subscribe('inbox-notifications');
+    let channel = pusher.subscribe('inbox-notifications-' + 1158);
 
     // new conversation notifications
     channel.bind('new-conversation', function(data) {
       history.push('/conversation/' + data.id + '?filter=open');
       setSelectedConversation(data.id);
+      newMessageAlert(true);
+    });
+
+    channel.bind('new-message', function(data) {
+      mutate('unreadMessageCount/');
+      mutate('conversations/?filter=open');
+      newMessageAlert(false);
     });
   }, []);
 
@@ -55,6 +77,8 @@ function App() {
     if (! selectedConversation) {
       return;
     }
+    mutate('unreadMessageCount/');
+    mutate('conversations/?filter=open');
     setMobileConversationListOpen(false);
   }, [selectedConversation]);
 

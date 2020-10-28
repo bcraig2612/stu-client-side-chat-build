@@ -62,7 +62,7 @@ export default function Auth() {
     if (conversationID) {
       link += "/" + conversationID;
     }
-    history.push(link);
+    window.location.href = link;
   }
 
   return (<p>{data.data.token}</p>);

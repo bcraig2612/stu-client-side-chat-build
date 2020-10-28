@@ -4,7 +4,6 @@ import ConversationItem from "./ConversationItem";
 import ComposeMessage from "./ComposeMessage";
 import IconButton from "@material-ui/core/IconButton";
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import Tooltip from "@material-ui/core/Tooltip";
 import Skeleton from "@material-ui/lab/Skeleton";
 import Button from "@material-ui/core/Button";
 import { useSnackbar } from 'notistack';
@@ -20,13 +19,11 @@ import {mutate} from "swr";
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
-import notificationMP3 from "../notification.mp3";
 import {useHistory} from "react-router-dom";
 import ComposeMessageLocked from "./ComposeMessageLocked";
 import ConversationLog from "./ConversationLog";
 import TypingIndicator from "./TypingIndicator";
 import ContactAvatar from "./ContactAvatar";
-import Link from "@material-ui/core/Link";
 
 const useStyles = makeStyles((theme) => ({
   conversationMain: {
@@ -116,22 +113,13 @@ const useStyles = makeStyles((theme) => ({
 Pusher.logToConsole = false;
 const pusher = new Pusher('a3105b52df63262dc19e', {
   cluster: 'us3',
-  authEndpoint: 'https://dev01.sotellus.com/API/chat/pusherAuthentication/',
+  authEndpoint: process.env.REACT_APP_API_URL + 'pusherAuthentication/',
   auth: {
     headers: {
       Authorization: 'Bearer ' + localStorage.getItem('stu_jwt'),
     }
   }
 });
-
-// play alert sound
-function newMessageAlert() {
-  const audio = new Audio(notificationMP3);
-  window.focus();
-  audio.play().catch((err) => {
-    console.log(err);
-  });
-}
 
 function ConversationMain(props) {
   const classes = useStyles();
@@ -179,9 +167,6 @@ function ConversationMain(props) {
 
         // new incoming messages
       channel.bind('new-message', function (message) {
-        if (message.sent_by_contact) {
-          newMessageAlert();
-        }
         setShowTypingIndicator(false);
         mutate(() => props.selectedConversation ? 'messages/?conversationID=' + props.selectedConversation : null, previousData => {
           return {...previousData, data: {conversation: previousData.data.conversation, messages: [...previousData.data.messages, message]}}
