@@ -11,11 +11,12 @@ import ForumIcon from '@material-ui/icons/Forum';
 import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 import Badge from "@material-ui/core/Badge";
 import DoneIcon from '@material-ui/icons/Done';
+import {useGetConversations, useGetUnreadMessageCount} from "../customHooks";
 
 const useStyles = makeStyles((theme) => ({
   conversationList: {
     backgroundColor: "#fff",
-    minWidth: "300px",
+    minWidth: "375px",
     maxWidth: "375px",
     width: "33.33%",
     flex: "0 0 auto",
@@ -133,6 +134,8 @@ const useStyles = makeStyles((theme) => ({
 function ConversationList(props) {
   const classes = useStyles();
   const history = useHistory();
+  const {data, isLoading, isError} = useGetUnreadMessageCount();
+
 
   let conversations = (
     <React.Fragment>
@@ -178,6 +181,11 @@ function ConversationList(props) {
             {accepted === 0 && (
               <div className={classes.listItemRinging}>
                 <NotificationsActiveIcon />
+              </div>
+            )}
+            {accepted === 1 && conversation.unread > 0 && props.selectedConversation != conversation.id && (
+              <div className={classes.listItemRinging}>
+                <Badge badgeContent={conversation.unread} max={99} color="primary" />
               </div>
             )}
             <div className={classes.listItemContent}>
@@ -254,7 +262,7 @@ function ConversationList(props) {
           <Tab label={(
             <div className={classes.tabContent}>
               <span className={classes.tabLabel}>Open</span>
-              <Badge badgeContent={0} color="primary" max={99}><ForumIcon /></Badge>
+              <Badge badgeContent={(!isLoading && !isError) ? data.data.unread_message_count : 0} color="primary" max={99}><ForumIcon /></Badge>
             </div>
           )} value="open" />
           <Tab label={(
