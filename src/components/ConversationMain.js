@@ -355,6 +355,16 @@ function ConversationMain(props) {
   if (! props.selectedConversation) {
     return (
       <div className={classes.conversationMain}>
+        <div className={classes.header}>
+          <div className={classes.visitorName}>
+            <IconButton size="medium" aria-label="Close" onClick={handleBackArrow} className={classes.backArrow}>
+              <KeyboardBackspaceIcon />
+            </IconButton>
+            <div>
+              Live Chat
+            </div>
+          </div>
+        </div>
         <div className={classes.infoBoxContainer}>
           <div className={classes.infoBox}>
             <h1>When visitors on your site start a chat, you'll see it here!</h1>
