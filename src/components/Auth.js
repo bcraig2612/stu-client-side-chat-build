@@ -65,5 +65,5 @@ export default function Auth() {
     window.location.href = link;
   }
 
-  return (<p>{data.data.token}</p>);
+  return null;
 }
