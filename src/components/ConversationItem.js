@@ -39,6 +39,17 @@ function ConversationItem(props) {
 
   let body = props.message.body;
 
+  if (body) {
+    body = body.split('\n').map(function(item, key) {
+      return (
+        <span key={key}>
+        {item}
+          <br/>
+      </span>
+      )
+    })
+  }
+
   if (props.conversation && props.conversation.sms_opt_in) {
     body = (
       <React.Fragment>
@@ -65,7 +76,9 @@ function ConversationItem(props) {
 
   return (
     <div className={classes.conversationItem}>
-      <div className={classes.bubble}>{body}</div>
+      <div className={classes.bubble}>
+        {body}
+      </div>
       <div className={classes.timeStamp}>{sent}</div>
     </div>
   );

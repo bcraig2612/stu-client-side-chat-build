@@ -111,7 +111,8 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
   },
   listItemContent: {
-    flex: 1
+    flex: 1,
+    maxWidth: "100%"
   },
   listItemRinging: {
     flexBasis: "50px",
@@ -131,6 +132,20 @@ const useStyles = makeStyles((theme) => ({
     marginRight: "5px"
   }
 }));
+
+function truncateText(str, length, ending) {
+  if (length == null) {
+    length = 100;
+  }
+  if (ending == null) {
+    ending = '...';
+  }
+  if (str.length > length) {
+    return str.substring(0, length - ending.length) + ending;
+  } else {
+    return str;
+  }
+}
 
 function ConversationList(props) {
   const classes = useStyles();
@@ -192,7 +207,7 @@ function ConversationList(props) {
             <div className={classes.listItemContent}>
               <div className={classes.listItemTop}>
                 <span className={classes.visitorName}>
-                  {conversation.name}
+                  {truncateText(conversation.name, 25)}
                 </span>
                 <span className={classes.listItemSent}>
                   {sent}
