@@ -403,9 +403,6 @@ function ConversationMain(props) {
           <ContactAvatar online={data.data.conversation.id === contactIsOnline} name={data.data.conversation.name} />
           <div>
             {data.data.conversation.name}
-            <div style={{fontSize: ".8em", fontWeight: "normal"}}>
-              {data.data.conversation.email_address}
-            </div>
           </div>
         </div>
 
