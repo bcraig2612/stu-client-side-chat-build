@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Auth() {
   let { authCode } = useParams();
   let query = useQuery();
-  const conversationID = query.get('conversationID') ? query.get('conversationID') : '';
+  const conversationID = query.get('id') ? query.get('id') : '';
 
   let history = useHistory();
   const {data, isLoading, isError} = useGetAuth(authCode);

@@ -232,14 +232,17 @@ export function useGetAuth(authCode) {
 }
 
 export function useCheckJWT() {
-  const token = localStorage.getItem('stu_jwt');
-
+  let token = localStorage.getItem('stu_jwt');
+  if (token) {
+    // return for use in Authorization header
+    token = 'Bearer ' + token;
+  }
   const fetcher = async url => {
     const res = await fetch(apiURL + 'checkJWT/', {
       method: "GET",
       withCredentials: true,
       headers: {
-        'Authorization': 'Bearer: ' + token,
+        'Authorization': token,
         'Content-Type': 'application/json'
       }
     })
