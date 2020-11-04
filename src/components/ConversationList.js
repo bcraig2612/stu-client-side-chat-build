@@ -12,6 +12,7 @@ import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 import Badge from "@material-ui/core/Badge";
 import DoneIcon from '@material-ui/icons/Done';
 import {useGetUnreadMessageCount} from "../customHooks";
+import logo from '../soTellUs.png';
 
 const useStyles = makeStyles((theme) => ({
   conversationList: {
@@ -42,6 +43,8 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   header: {
+    background: "#333",
+    color: "#fff",
     padding: theme.spacing(2),
   },
   title: {
@@ -262,7 +265,7 @@ function ConversationList(props) {
       <div className={classes.header}>
         <div className={classes.title}>
           <span>Live Chat</span>
-          <img src="https://lirp-cdn.multiscreensite.com/57956d42/dms3rep/multi/opt/Logo_1-640w.png" width="130px" alt="logo" />
+          <img src={logo} width="130px" alt="logo" />
         </div>
       </div>
 
