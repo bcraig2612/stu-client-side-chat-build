@@ -401,7 +401,7 @@ function ConversationMain(props) {
             <KeyboardBackspaceIcon />
           </IconButton>
           <ContactAvatar online={data.data.conversation.id === contactIsOnline} name={data.data.conversation.name} />
-          <div style={{display: "flex", alignItems: "center"}}>
+          <div style={{alignItems: "center", display: "flex"}}>
             {data.data.conversation.name}
           </div>
         </div>
