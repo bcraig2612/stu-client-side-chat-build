@@ -2,7 +2,7 @@ import React from 'react';
 import {useParams, useHistory} from "react-router-dom";
 import {useGetAuth, setJWT, useQuery, useCheckJWT} from "../customHooks";
 import {makeStyles} from "@material-ui/core/styles";
-import logo from '../soTellUs.png';
+import logo from '../soTellUsSquareLogo.png';
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Link from "@material-ui/core/Link";
 
