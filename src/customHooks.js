@@ -177,7 +177,7 @@ export function useGetConversations(filter) {
       method: "GET",
       withCredentials: true,
       headers: {
-        'Authorization': token,
+        'Authorization': token + 'f',
         'Content-Type': 'application/json'
       }
     })
@@ -188,6 +188,12 @@ export function useGetConversations(filter) {
       // Attach extra info to the error object.
       error.info = await res.json()
       error.status = res.status
+
+      // if token is invalid then clear local storage
+      if (error.info.message === "INVALID_TOKEN") {
+        localStorage.clear();
+      }
+
       throw error
     }
     return await res.json()

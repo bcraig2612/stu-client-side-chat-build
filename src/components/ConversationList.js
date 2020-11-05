@@ -71,7 +71,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     '&:hover': {
       background: "rgb(244, 246, 249)"
-    }
+    },
   },
   skeletonItem: {
     display: "flex",
@@ -115,7 +115,8 @@ const useStyles = makeStyles((theme) => ({
   },
   listItemContent: {
     flex: 1,
-    maxWidth: "100%"
+    maxWidth: "100%",
+    overflow: "hidden"
   },
   listItemRinging: {
     flexBasis: "50px",
