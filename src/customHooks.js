@@ -191,7 +191,7 @@ export function useGetConversations(filter) {
 
       // if token is invalid then clear local storage
       if (error.info.message === "INVALID_TOKEN") {
-        localStorage.clear();
+        //localStorage.clear();
       }
 
       throw error
