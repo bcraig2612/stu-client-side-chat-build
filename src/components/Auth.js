@@ -40,7 +40,6 @@ export default function Auth() {
   }
 
   if (isError) {
-    console.log(checkJWTData);
     if (checkJWTData) {
       let link = "/conversation";
       if (conversationID) {
