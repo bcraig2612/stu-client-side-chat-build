@@ -12,6 +12,11 @@ import ConversationMain from "./components/ConversationMain";
 import {mutate} from "swr";
 import newConversationMP3 from "./new-conversation.mp3";
 import notificationMP3 from "./notification.mp3";
+// import * as PusherPushNotifications from "@pusher/push-notifications-web";
+//
+// const beamsClient = new PusherPushNotifications.Client({
+//   instanceId: '3691a62b-d336-4d69-b158-c9bc29b5d8ec',
+// });
 
 // play alert sound
 function newMessageAlert(conversationAlert) {
@@ -21,7 +26,6 @@ function newMessageAlert(conversationAlert) {
   } else {
     audio = new Audio(notificationMP3);
   }
-  window.focus();
   audio.play().catch((err) => {
     console.log(err);
   });
@@ -43,6 +47,11 @@ function App() {
   }, [queryFilter]);
 
   useEffect(() => {
+    // beamsClient.start()
+    //   .then(() => beamsClient.addDeviceInterest('hello'))
+    //   .then(() => console.log('Successfully registered and subscribed!'))
+    //   .catch(console.error);
+
     Pusher.logToConsole = true;
     const pusher = new Pusher('a3105b52df63262dc19e', {
       cluster: 'us3'

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {makeStyles} from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Tabs from "@material-ui/core/Tabs";
@@ -156,6 +156,13 @@ function ConversationList(props) {
   const history = useHistory();
   const {data, isLoading, isError} = useGetUnreadMessageCount();
 
+  useEffect(() => {
+    if (data && data.data.unread_message_count > 0) {
+      document.title = "(" + data.data.unread_message_count + ") Live Chat";
+    } else {
+      document.title = "Live Chat";
+    }
+  }, [data]);
 
   let conversations = (
     <React.Fragment>
