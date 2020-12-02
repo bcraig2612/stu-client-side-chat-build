@@ -11,6 +11,14 @@ export function setJWT(jwt) {
   localStorage.setItem('stu_jwt', jwt);
 }
 
+export function setClientid(id) {
+  localStorage.setItem('stu_clientid', id);
+}
+
+export function getClientid() {
+  return localStorage.getItem('stu_clientid');
+}
+
 export function getJWT() {
   const token = localStorage.getItem('stu_jwt');
   if (token) {

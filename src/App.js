@@ -5,7 +5,7 @@ import {
 } from "react-router-dom";
 import { SnackbarProvider } from 'notistack';
 import Pusher from 'pusher-js';
-import {useGetConversations, useQuery} from "./customHooks";
+import {getClientid, useGetConversations, useQuery} from "./customHooks";
 import ConversationList from './components/ConversationList';
 import Layout from "./components/Layout";
 import ConversationMain from "./components/ConversationMain";
@@ -41,7 +41,8 @@ function App() {
   const queryFilter = query.get('filter') ? query.get('filter') : 'open';
 
   const {data, isLoading, isError} = useGetConversations(filter);
-
+  const clientid = getClientid();
+  
   useEffect(() => {
     setFilter(queryFilter);
   }, [queryFilter]);
@@ -62,7 +63,7 @@ function App() {
     }
 
     // subscribe to inbox notifications
-    let channel = pusher.subscribe('inbox-notifications-' + 1158);
+    let channel = pusher.subscribe('inbox-notifications-' + clientid);
 
     // new conversation notifications
     channel.bind('new-conversation', function(data) {

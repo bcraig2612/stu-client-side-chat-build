@@ -1,6 +1,6 @@
 import React from 'react';
 import {useParams, useHistory} from "react-router-dom";
-import {useGetAuth, setJWT, useQuery, useCheckJWT} from "../customHooks";
+import {useGetAuth, setJWT, useQuery, useCheckJWT, setClientid} from "../customHooks";
 import {makeStyles} from "@material-ui/core/styles";
 import logo from '../soTellUsSquareLogo.png';
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -55,8 +55,9 @@ export default function Auth() {
     );
   }
 
-  if (!isError && data && data.data.token) {
+  if (!isError && data && data.data.token && data.data.clientid) {
     setJWT(data.data.token);
+    setClientid(data.data.clientid);
     let link = "/conversation";
     if (conversationID) {
       link += "/" + conversationID;
