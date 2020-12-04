@@ -18,17 +18,16 @@ import notificationMP3 from "./notification.mp3";
 //   instanceId: '3691a62b-d336-4d69-b158-c9bc29b5d8ec',
 // });
 
-// play alert sound
-function newMessageAlert(conversationAlert) {
-  let audio;
-  if (conversationAlert) {
-    audio = new Audio(newConversationMP3);
-  } else {
-    audio = new Audio(notificationMP3);
-  }
-  audio.play().catch((err) => {
+function unlockAudio() {
+  const sound = new Audio(newConversationMP3);
+  sound.play().catch((err) => {
     console.log(err);
   });
+  sound.pause();
+  sound.currentTime = 0;
+
+  document.body.removeEventListener('click', unlockAudio)
+  document.body.removeEventListener('touchstart', unlockAudio)
 }
 
 function App() {
@@ -52,6 +51,21 @@ function App() {
     //   .then(() => beamsClient.addDeviceInterest('hello'))
     //   .then(() => console.log('Successfully registered and subscribed!'))
     //   .catch(console.error);
+    // play alert sound
+    document.body.addEventListener('click', unlockAudio);
+    document.body.addEventListener('touchstart', unlockAudio);
+
+    function newMessageAlert(conversationAlert) {
+      let audio;
+      if (conversationAlert) {
+        audio = new Audio(newConversationMP3);
+      } else {
+        audio = new Audio(notificationMP3);
+      }
+      audio.play().catch((err) => {
+        console.log(err);
+      });
+    }
 
     Pusher.logToConsole = true;
     const pusher = new Pusher('a3105b52df63262dc19e', {
