@@ -40,6 +40,7 @@ function ConversationItem(props) {
   let body = props.message.body;
 
   if (body) {
+    body += '';
     body = body.split('\n').map(function(item, key) {
       return (
         <span key={key}>
