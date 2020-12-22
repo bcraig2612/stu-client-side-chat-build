@@ -13,6 +13,7 @@ import Badge from "@material-ui/core/Badge";
 import DoneIcon from '@material-ui/icons/Done';
 import {useGetUnreadMessageCount} from "../customHooks";
 import logo from '../soTellUs.png';
+import GradeIcon from '@material-ui/icons/Grade';
 
 const useStyles = makeStyles((theme) => ({
   conversationList: {
@@ -112,6 +113,7 @@ const useStyles = makeStyles((theme) => ({
   },
   listItemWrapper: {
     display: "flex",
+    position: "relative"
   },
   listItemContent: {
     flex: 1,
@@ -134,6 +136,11 @@ const useStyles = makeStyles((theme) => ({
   },
   tabLabel: {
     marginRight: "5px"
+  },
+  leftContactInfoIcon: {
+    position: "absolute",
+    right: "-12px",
+    top: "-13px"
   }
 }));
 
@@ -182,6 +189,7 @@ function ConversationList(props) {
     conversations = props.conversations.data.conversations.map((conversation) => {
       const status = conversation.active ? 'open' : 'closed';
       const accepted = (conversation.active !== 0 && conversation.accepted);
+      const leftContactInfo = !!conversation.contact_opt_in_timestamp;
 
       // filter conversations based on status
       if (props.filter !== status) {
@@ -210,6 +218,13 @@ function ConversationList(props) {
                 <NotificationsActiveIcon />
               </div>
             )}
+
+            {leftContactInfo && (
+              <div className={classes.leftContactInfoIcon}>
+                <GradeIcon fontSize="small" htmlColor="#ffb400" />
+              </div>
+            )}
+
             {accepted === 1 && conversation.unread > 0 && props.selectedConversation != conversation.id && (
               <div className={classes.listItemRinging}>
                 <Badge badgeContent={conversation.unread} max={99} color="primary" />
