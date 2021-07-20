@@ -26,6 +26,7 @@ export function getJWT() {
     return 'Bearer ' + token;
   }
   // if no authorization token then forward to login
+  //comment out for dev-environment
   // window.location.href = "https://sotellus.com/login";
   return false;
 }
