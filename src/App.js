@@ -1,15 +1,12 @@
-import React, {useEffect, useState} from 'react';
-import {
-  useHistory,
-  useParams
-} from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import { useHistory, useParams } from "react-router-dom";
 import { SnackbarProvider } from 'notistack';
 import Pusher from 'pusher-js';
-import {getClientid, useGetConversations, useQuery} from "./customHooks";
+import { getClientid, useGetConversations, useQuery } from "./customHooks";
 import ConversationList from './components/ConversationList';
 import Layout from "./components/Layout";
 import ConversationMain from "./components/ConversationMain";
-import {mutate} from "swr";
+import { mutate } from "swr";
 import newConversationMP3 from "./new-conversation.mp3";
 import notificationMP3 from "./notification.mp3";
 // import * as PusherPushNotifications from "@pusher/push-notifications-web";
@@ -41,7 +38,7 @@ function App() {
 
   const {data, isLoading, isError} = useGetConversations(filter);
   const clientid = getClientid();
-  
+
   useEffect(() => {
     setFilter(queryFilter);
   }, [queryFilter]);
@@ -83,6 +80,7 @@ function App() {
     channel.bind('new-conversation', function(data) {
       history.push('/conversation/' + data.id + '?filter=open');
       setSelectedConversation(data.id);
+
       newMessageAlert(true);
     });
 
@@ -91,7 +89,7 @@ function App() {
       mutate('conversations/?filter=open');
       newMessageAlert(false);
     });
-  }, []);
+  }, [clientid, conversationID, history]);
 
   useEffect(() => {
     setSelectedConversation(conversationID);

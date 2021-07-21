@@ -1,4 +1,4 @@
-import {useLocation} from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import useSWR from "swr";
 
 const apiURL = process.env.REACT_APP_API_URL;
@@ -26,7 +26,6 @@ export function getJWT() {
     return 'Bearer ' + token;
   }
   // if no authorization token then forward to login
-  //comment out for dev-environment
   // window.location.href = "https://sotellus.com/login";
   return false;
 }

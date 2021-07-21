@@ -1,31 +1,7 @@
-import React, {useState} from 'react';
-import {makeStyles} from "@material-ui/core/styles";
+import React, { useState } from 'react';
+import useStyles from "./styles/ComposeMessage.styles";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-
-const useStyles = makeStyles((theme) => ({
-  composeMessageContainer: {
-    padding: theme.spacing(2),
-    backgroundColor: "#fff",
-    height: "auto",
-    minHeight: "100px",
-    borderTop: "1px solid rgb(228, 233, 240)",
-    display: "flex",
-    flexDirection: "column",
-    [theme.breakpoints.down('xs')]: {
-      height: "127px",
-      position: "fixed",
-      bottom: "0",
-      width: "100%"
-    },
-    zIndex: "1000"
-  },
-  composeActions: {
-    marginTop: "10px",
-    display: "flex",
-    justifyContent: "flex-end"
-  }
-}));
 
 function ComposeMessage(props) {
   const classes = useStyles();

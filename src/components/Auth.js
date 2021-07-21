@@ -1,23 +1,10 @@
 import React from 'react';
-import {useParams, useHistory} from "react-router-dom";
-import {useGetAuth, setJWT, useQuery, useCheckJWT, setClientid} from "../customHooks";
-import {makeStyles} from "@material-ui/core/styles";
+import { useParams, useHistory } from "react-router-dom";
+import useStyles from "./styles/Auth.styles";
+import { useGetAuth, setJWT, useQuery, useCheckJWT, setClientid } from "../customHooks";
 import logo from '../soTellUsSquareLogo.png';
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Link from "@material-ui/core/Link";
-
-const useStyles = makeStyles((theme) => ({
-  authContainer: {
-    display: "flex",
-    padding: theme.spacing(2),
-    backgroundColor: "#fff",
-    height: "100vh",
-    width: "100%",
-    alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "column"
-  }
-}));
 
 export default function Auth() {
   let { authCode } = useParams();

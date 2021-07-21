@@ -1,14 +1,5 @@
 import React from 'react';
-import {makeStyles} from "@material-ui/core/styles";
-
-const useStyles = makeStyles((theme) => ({
-  layout: {
-    display: "flex",
-    flexDirection: "row",
-    height: "100vh",
-    width: "100wh",
-  }
-}));
+import useStyles from "./styles/Layout.styles";
 
 function Layout(props) {
   const classes = useStyles();
