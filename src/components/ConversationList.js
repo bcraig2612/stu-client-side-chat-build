@@ -13,7 +13,9 @@ import ForumIcon from '@material-ui/icons/Forum';
 import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 import Badge from "@material-ui/core/Badge";
 import DoneIcon from '@material-ui/icons/Done';
-import GradeIcon from '@material-ui/icons/Grade';
+import EmailIcon from '@material-ui/icons/Email';
+import PhoneIcon from '@material-ui/icons/Phone';
+import SmsIcon from '@material-ui/icons/Sms';
 
 function truncateText(str, length, ending) {
   if (length == null) {
@@ -58,9 +60,13 @@ function ConversationList(props) {
 
   if (!props.conversationsLoading && !props.errorLoadingConversation && props.conversations.data.conversations.length) {
     conversations = props.conversations.data.conversations.map((conversation) => {
+      // console.log(conversation);
       const status = conversation.active ? 'open' : 'closed';
       const accepted = (conversation.active !== 0 && conversation.accepted);
       const leftContactInfo = !!conversation.contact_opt_in_timestamp;
+      const contactViaCall = !!conversation.call_opt_in;
+      const contactViaSMS = !!conversation.sms_opt_in;
+      const contactViaEmail = !!conversation.email_opt_in;
 
       // filter conversations based on status
       if (props.filter !== status) {
@@ -90,9 +96,21 @@ function ConversationList(props) {
               </div>
             )}
 
-            {leftContactInfo && (
+            {leftContactInfo && contactViaCall &&(
               <div className={classes.leftContactInfoIcon}>
-                <GradeIcon fontSize="small" htmlColor="#FFB400" />
+                <PhoneIcon fontSize="small" htmlColor="#3F51B5" />
+              </div>
+            )}
+
+            {leftContactInfo && contactViaSMS &&(
+              <div className={classes.leftContactInfoIcon}>
+                <SmsIcon fontSize="small" htmlColor="#3F51B5" />
+              </div>
+            )}
+
+            {leftContactInfo && contactViaEmail &&(
+              <div className={classes.leftContactInfoIcon}>
+                <EmailIcon fontSize="small" htmlColor="#3F51B5" />
               </div>
             )}
 

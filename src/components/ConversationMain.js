@@ -193,9 +193,9 @@ function ConversationMain(props) {
     let res = requestUpdateConversation(active, props.selectedConversation);
     res
       .then((data) => {
-        const filter = active ? "open" : "closed";
+        const filter = "open";
         history.push(
-          "/conversation/" + props.selectedConversation + "?filter=" + filter
+          "/conversation/?filter=" + filter
         );
         mutate("messages/?conversationID=" + props.selectedConversation);
       })

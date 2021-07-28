@@ -125,8 +125,8 @@ const useStyles = makeStyles((theme) => ({
   },
   leftContactInfoIcon: {
     position: "absolute",
-    right: "-12px",
-    top: "-13px"
+    right: "-11px",
+    top: "-15px"
   }
 }));
 
