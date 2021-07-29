@@ -37,7 +37,7 @@ export default function Auth() {
     return (
       <div className={classes.authContainer}>
         <img style={{marginBottom: "10px"}} src={logo} alt="Logo" width="100px" />
-        <p style={{textAlign: "center"}}>Oops, looks like this link is invalid.<br /> Please go back to <Link href="https://dev01.sotellus.com/my-profile/">SoTellUs.com and reopen the chat window.</Link></p>
+        <p style={{textAlign: "center"}}>Oops, looks like this link is invalid.<br /> Please go back to <Link href="https://sotellus.com/my-profile/">SoTellUs.com and reopen the chat window.</Link></p>
       </div>
     );
   }

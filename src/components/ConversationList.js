@@ -38,9 +38,9 @@ function ConversationList(props) {
 
   useEffect(() => {
     if (data && data.data.unread_message_count > 0) {
-      document.title = "(" + data.data.unread_message_count + ") Dev-Chat-Dashboard";
+      document.title = "(" + data.data.unread_message_count + ") Live Chat";
     } else {
-      document.title = "Dev-Chat-Dashboard";
+      document.title = "Live Chat";
     }
   }, [data]);
 
