@@ -194,10 +194,9 @@ function ConversationMain(props) {
     res
       .then((data) => {
         const filter = "open";
-        history.push(
-          "/conversation/?filter=" + filter
-        );
+        history.push("/conversation/?filter=" + filter);
         mutate("messages/?conversationID=" + props.selectedConversation);
+        mutate("conversations/?filter=" + filter);
       })
       .catch(() => {
         displayError("Error updating conversation.");

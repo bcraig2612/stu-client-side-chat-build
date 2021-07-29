@@ -2,7 +2,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
   conversationList: {
-    backgroundColor: "#F2F3F4",
+    backgroundColor: "#FFFFFF",
     minWidth: "375px",
     maxWidth: "375px",
     width: "33.33%",
@@ -65,15 +65,15 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
   },
   selectedConversation: {
-    background: "#eee",
+    background: "#EEEEEE",
     color: "#333",
     '&:hover': {
-      background: "#eee",
+      background: "#EEEEEE",
     }
   },
   incomingConversation: {
     background: theme.palette.primary.main,
-    color: "#fff",
+    color: "#FFFFFF",
     '&:hover': {
       background: theme.palette.primary.main
     }
@@ -112,7 +112,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center"
   },
   noResultsContainer: {
-    background: "#F2F3F4",
+    background: "#FFFFFF",
     textAlign: "center",
     padding: "20px"
   },
