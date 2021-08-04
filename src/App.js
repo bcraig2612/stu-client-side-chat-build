@@ -65,7 +65,7 @@ function App() {
     }
 
     Pusher.logToConsole = true;
-    const pusher = new Pusher('a3105b52df63262dc19e', {
+    const pusher = new Pusher("e9f1648efd7db967196d", {
       cluster: 'us3'
     });
 

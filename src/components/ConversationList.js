@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link, useHistory } from "react-router-dom";
 import moment from "moment";
-import { useGetUnreadMessageCount } from "../customHooks";
+import { useGetUnreadMessageCount, requestUpdateConversation } from "../customHooks";
 import logo from '../soTellUs.png';
 import useStyles from './styles/ConversationList.styles';
 import Paper from "@material-ui/core/Paper";
@@ -60,13 +60,29 @@ function ConversationList(props) {
 
   if (!props.conversationsLoading && !props.errorLoadingConversation && props.conversations.data.conversations.length) {
     conversations = props.conversations.data.conversations.map((conversation) => {
-      // console.log(conversation);
       const status = conversation.active ? 'open' : 'closed';
       const accepted = (conversation.active !== 0 && conversation.accepted);
       const leftContactInfo = !!conversation.contact_opt_in_timestamp;
       const contactViaCall = !!conversation.call_opt_in;
       const contactViaSMS = !!conversation.sms_opt_in;
       const contactViaEmail = !!conversation.email_opt_in;
+
+      const rightNow = moment();
+      const unixClone = rightNow.clone().unix();
+      let unixToHoursRightNow = unixClone / 3600;
+      unixToHoursRightNow = unixToHoursRightNow.toFixed(1);
+
+      const momentConversationSent = moment(conversation.sent);
+      const clonedMomentConversationSent = momentConversationSent.clone();
+      let unixToHoursConversationSent = clonedMomentConversationSent / 3600;
+      unixToHoursConversationSent = unixToHoursConversationSent.toFixed(1);
+      let autoCloseCheck = unixToHoursRightNow - unixToHoursConversationSent;
+      autoCloseCheck = autoCloseCheck.toFixed(1);
+
+      if(accepted && autoCloseCheck >= 24.0) {
+        requestUpdateConversation(0, conversation.id);
+        console.log("Conversation closed.");
+      };
 
       // filter conversations based on status
       if (props.filter !== status) {
@@ -96,25 +112,25 @@ function ConversationList(props) {
               </div>
             )}
 
-            {leftContactInfo && contactViaCall &&(
+            {leftContactInfo && contactViaCall && (
               <div className={classes.leftContactInfoIcon}>
                 <PhoneIcon fontSize="small" htmlColor="#3F51B5" />
               </div>
             )}
 
-            {leftContactInfo && contactViaSMS &&(
+            {leftContactInfo && contactViaSMS && (
               <div className={classes.leftContactInfoIcon}>
                 <SmsIcon fontSize="small" htmlColor="#3F51B5" />
               </div>
             )}
 
-            {leftContactInfo && contactViaEmail &&(
+            {leftContactInfo && contactViaEmail && (
               <div className={classes.leftContactInfoIcon}>
                 <EmailIcon fontSize="small" htmlColor="#3F51B5" />
               </div>
             )}
 
-            {accepted === 1 && conversation.unread > 0 && props.selectedConversation != conversation.id && (
+            {accepted === 1 && conversation.unread > 0 && props.selectedConversation !== conversation.id && (
               <div className={classes.listItemRinging}>
                 <Badge badgeContent={conversation.unread} max={99} color="primary" />
               </div>
