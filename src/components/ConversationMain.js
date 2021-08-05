@@ -4,7 +4,13 @@ import { useSnackbar } from "notistack";
 import Pusher from "pusher-js";
 import { mutate } from "swr";
 import useStyles from "./styles/ConversationMain.styles";
-import { requestAcceptConversation, requestDeleteConversation, requestSendMessage, requestUpdateConversation, useGetConversation } from "../customHooks";
+import {
+  requestAcceptConversation,
+  requestDeleteConversation,
+  requestSendMessage,
+  requestUpdateConversation,
+  useGetConversation,
+} from "../customHooks";
 import ConversationItem from "./ConversationItem";
 import ComposeMessage from "./ComposeMessage";
 import ComposeMessageLocked from "./ComposeMessageLocked";
@@ -411,7 +417,7 @@ function ConversationMain(props) {
           />
         )}
         {messages}
-        {showTypingIndicator == props.selectedConversation && (
+        {showTypingIndicator === props.selectedConversation && (
           <TypingIndicator />
         )}
         {!isLoading &&
