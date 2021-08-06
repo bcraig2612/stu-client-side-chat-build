@@ -28,7 +28,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 // connect to pusher
 // set up pusher
 Pusher.logToConsole = false;
-const pusher = new Pusher("e9f1648efd7db967196d", {
+const pusher = new Pusher("a3105b52df63262dc19e", {
   cluster: "us3",
   authEndpoint: process.env.REACT_APP_API_URL + "pusherAuthentication/",
   auth: {

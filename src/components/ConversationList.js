@@ -67,23 +67,23 @@ function ConversationList(props) {
       const contactViaSMS = !!conversation.sms_opt_in;
       const contactViaEmail = !!conversation.email_opt_in;
 
-      if(accepted) {
-        const rightNow = moment();
-        const unixClone = rightNow.clone().unix();
-        let unixToHoursRightNow = unixClone / 3600;
-        unixToHoursRightNow = unixToHoursRightNow.toFixed(1);
+      // if(accepted) {
+      //   const rightNow = moment();
+      //   const unixClone = rightNow.clone().unix();
+      //   let unixToHoursRightNow = unixClone / 3600;
+      //   unixToHoursRightNow = unixToHoursRightNow.toFixed(1);
 
-        const momentConversationSent = moment(conversation.sent);
-        const clonedMomentConversationSent = momentConversationSent.clone();
-        let unixToHoursConversationSent = clonedMomentConversationSent / 3600;
-        unixToHoursConversationSent = unixToHoursConversationSent.toFixed(1);
-        let autoCloseCheck = unixToHoursRightNow - unixToHoursConversationSent;
-        autoCloseCheck = autoCloseCheck.toFixed(1);
+      //   const momentConversationSent = moment(conversation.sent);
+      //   const clonedMomentConversationSent = momentConversationSent.clone();
+      //   let unixToHoursConversationSent = clonedMomentConversationSent / 3600;
+      //   unixToHoursConversationSent = unixToHoursConversationSent.toFixed(1);
+      //   let autoCloseCheck = unixToHoursRightNow - unixToHoursConversationSent;
+      //   autoCloseCheck = autoCloseCheck.toFixed(1);
 
-        if(autoCloseCheck >= 24.0) {
-          requestUpdateConversation(0, conversation.id);
-        };
-      };
+      //   if(autoCloseCheck >= 24.0) {
+      //     requestUpdateConversation(0, conversation.id);
+      //   };
+      // };
 
       // filter conversations based on status
       if (props.filter !== status) {
