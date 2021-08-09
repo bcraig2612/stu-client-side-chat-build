@@ -1,8 +1,8 @@
 import { useLocation } from "react-router-dom";
 import useSWR from "swr";
 
-const apiURL = process.env.NODE_ENV === "production" ? process.env.REACT_APP_STU_PROD_API_URL : process.env.REACT_APP_STU_DEV_API_URL;
-const authRedirectURL = process.env.NODE_ENV === "production" ? process.env.REACT_APP_STU_PROD_AUTH_REDIRECT : process.env.REACT_APP_STU_DEV_AUTH_REDIRECT;
+const apiURL = process.env.REACT_APP_STU_API_URL;
+const authRedirectURL = process.env.REACT_APP_STU_AUTH_REDIRECT;
 
 export function useQuery() {
   return new URLSearchParams(useLocation().search);

@@ -39,7 +39,7 @@ function App() {
   const {data, isLoading, isError} = useGetConversations(filter);
   const clientid = getClientid();
 
-  const pusherKey = process.env.NODE_ENV === "production" ? process.env.REACT_APP_STU_PROD_PUSHER_API_KEY : process.env.REACT_APP_STU_DEV_PUSHER_API_KEY;
+  const pusherKey = process.env.REACT_APP_STU_PUSHER_API_KEY;
 
   useEffect(() => {
     setFilter(queryFilter);

@@ -17,7 +17,7 @@ export default function Auth() {
 
   const classes = useStyles();
 
-  const jwtErrorURL = process.env.NODE_ENV === "production" ? process.env.REACT_APP_STU_PROD_JWT_ERROR_REDIRECT : process.env.REACT_APP_STU_DEV_JWT_ERROR_REDIRECT;
+  const jwtErrorURL = process.env.REACT_APP_STU_JWT_ERROR_REDIRECT;
 
   if (isLoading) {
     return (

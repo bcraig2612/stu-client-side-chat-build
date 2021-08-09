@@ -27,8 +27,8 @@ import MenuItem from "@material-ui/core/MenuItem";
 
 // connect to pusher
 // set up pusher
-const pusherKey = process.env.NODE_ENV === "production" ? process.env.REACT_APP_STU_PROD_PUSHER_API_KEY : process.env.REACT_APP_STU_DEV_PUSHER_API_KEY;
-const apiURL = process.env.NODE_ENV === "production" ? process.env.REACT_APP_STU_PROD_API_URL : process.env.REACT_APP_STU_DEV_API_URL;
+const pusherKey = process.env.REACT_APP_STU_PUSHER_API_KEY;
+const apiURL = process.env.REACT_APP_STU_API_URL;
 
 Pusher.logToConsole = false;
 const pusher = new Pusher(pusherKey, {
