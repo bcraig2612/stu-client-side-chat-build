@@ -1,7 +1,8 @@
 import { useLocation } from "react-router-dom";
 import useSWR from "swr";
 
-const apiURL = process.env.REACT_APP_API_URL;
+const apiURL = process.env.NODE_ENV === "production" ? process.env.REACT_APP_STU_PROD_API_URL : process.env.REACT_APP_STU_DEV_API_URL;
+const authRedirectURL = process.env.NODE_ENV === "production" ? process.env.REACT_APP_STU_PROD_AUTH_REDIRECT : process.env.REACT_APP_STU_DEV_AUTH_REDIRECT;
 
 export function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -26,7 +27,7 @@ export function getJWT() {
     return 'Bearer ' + token;
   }
   // if no authorization token then forward to login
-  window.location.href = "https://sotellus.com/login";
+  window.location.href = authRedirectURL;
   return false;
 }
 
@@ -93,7 +94,7 @@ export async function requestUpdateConversation(active, conversationID) {
 export async function requestDeleteConversation(conversationID) {
   const token = getJWT();
   const data = {conversationID: conversationID};
-  console.log(data);
+  // console.log(data);
   return fetch(apiURL + 'removeConversation/', {
     method: "POST",
     withCredentials: true,

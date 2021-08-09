@@ -39,6 +39,8 @@ function App() {
   const {data, isLoading, isError} = useGetConversations(filter);
   const clientid = getClientid();
 
+  const pusherKey = process.env.NODE_ENV === "production" ? process.env.REACT_APP_STU_PROD_PUSHER_API_KEY : process.env.REACT_APP_STU_DEV_PUSHER_API_KEY;
+
   useEffect(() => {
     setFilter(queryFilter);
   }, [queryFilter]);
@@ -65,7 +67,7 @@ function App() {
     }
 
     Pusher.logToConsole = true;
-    const pusher = new Pusher("a3105b52df63262dc19e", {
+    const pusher = new Pusher(pusherKey, {
       cluster: 'us3'
     });
 
@@ -89,7 +91,7 @@ function App() {
       mutate('conversations/?filter=open');
       newMessageAlert(false);
     });
-  }, [clientid, conversationID, history]);
+  }, [clientid, conversationID, history, pusherKey]);
 
   useEffect(() => {
     setSelectedConversation(conversationID);

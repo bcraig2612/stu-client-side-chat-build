@@ -27,10 +27,13 @@ import MenuItem from "@material-ui/core/MenuItem";
 
 // connect to pusher
 // set up pusher
+const pusherKey = process.env.NODE_ENV === "production" ? process.env.REACT_APP_STU_PROD_PUSHER_API_KEY : process.env.REACT_APP_STU_DEV_PUSHER_API_KEY;
+const apiURL = process.env.NODE_ENV === "production" ? process.env.REACT_APP_STU_PROD_API_URL : process.env.REACT_APP_STU_DEV_API_URL;
+
 Pusher.logToConsole = false;
-const pusher = new Pusher("a3105b52df63262dc19e", {
+const pusher = new Pusher(pusherKey, {
   cluster: "us3",
-  authEndpoint: process.env.REACT_APP_API_URL + "pusherAuthentication/",
+  authEndpoint: apiURL + "pusherAuthentication/",
   auth: {
     headers: {
       Authorization: "Bearer " + localStorage.getItem("stu_jwt"),
@@ -49,8 +52,7 @@ function ConversationMain(props) {
 
   // reference for end of message container
   const messagesEnd = useRef(null);
-  const [submittingAcceptConversation, setSubmittingAcceptConversation] =
-    useState(false);
+  const [submittingAcceptConversation, setSubmittingAcceptConversation] = useState(false);
   const [showTypingIndicator, setShowTypingIndicator] = useState(false);
   const [contactIsOnline, setContactIsOnline] = useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
