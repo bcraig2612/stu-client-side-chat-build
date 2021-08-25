@@ -9,11 +9,6 @@ import ConversationMain from "./components/ConversationMain";
 import { mutate } from "swr";
 import newConversationMP3 from "./new-conversation.mp3";
 import notificationMP3 from "./notification.mp3";
-// import * as PusherPushNotifications from "@pusher/push-notifications-web";
-//
-// const beamsClient = new PusherPushNotifications.Client({
-//   instanceId: '3691a62b-d336-4d69-b158-c9bc29b5d8ec',
-// });
 
 function unlockAudio() {
   const sound = new Audio(newConversationMP3);
@@ -46,10 +41,6 @@ function App() {
   }, [queryFilter]);
 
   useEffect(() => {
-    // beamsClient.start()
-    //   .then(() => beamsClient.addDeviceInterest('hello'))
-    //   .then(() => console.log('Successfully registered and subscribed!'))
-    //   .catch(console.error);
     // play alert sound
     document.body.addEventListener('click', unlockAudio);
     document.body.addEventListener('touchstart', unlockAudio);

@@ -4,13 +4,7 @@ import { useSnackbar } from "notistack";
 import Pusher from "pusher-js";
 import { mutate } from "swr";
 import useStyles from "./styles/ConversationMain.styles";
-import {
-  requestAcceptConversation,
-  requestDeleteConversation,
-  requestSendMessage,
-  requestUpdateConversation,
-  useGetConversation,
-} from "../customHooks";
+import { visitorLeftCloseConversation, requestAcceptConversation, requestDeleteConversation, requestSendMessage, requestUpdateConversation, useGetConversation } from "../customHooks";
 import ConversationItem from "./ConversationItem";
 import ComposeMessage from "./ComposeMessage";
 import ComposeMessageLocked from "./ComposeMessageLocked";
@@ -57,6 +51,29 @@ function ConversationMain(props) {
   const [contactIsOnline, setContactIsOnline] = useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
 
+// =====================================================ADDED 08/24/21===================================================================
+  useEffect(() => {
+    if (data && data.data.conversation && data.data.conversation.accepted === 1 && !data.data.conversation.deactivated_timestamp && !data.data.conversation.inactive_timestamp) {
+      if(contactIsOnline === false) {
+        let res = visitorLeftCloseConversation(data.data.conversation.id);
+        const timer = setTimeout(() => {
+          res
+            .then((data) => {
+              history.push("/conversation/"+props.selectedConversation+"?filter=closed");
+              mutate("messages/?conversationID=" + props.selectedConversation);
+              displayNotification("Visitor left the conversation.");
+            })
+            .catch(() => {
+              displayError("Error closing conversation.");
+            });
+        }, 3000);
+        return () => clearTimeout(timer);
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [contactIsOnline, data, props.selectedConversation])
+// ========================================================================================================================================
+
   useEffect(() => {
     if (data && data.data.conversation) {
       const channel = pusher.subscribe(data.data.conversation.channel_name);
@@ -64,7 +81,7 @@ function ConversationMain(props) {
       channel.unbind("client-typing");
 
       channel.bind("pusher:subscription_succeeded", function () {
-        if (channel.members && channel.members.count === 2) {
+        if (channel.members && channel.members.count === 2 && !data.data.conversation.deactivated_timestamp && !data.data.conversation.inactive_timestamp) {
           setContactIsOnline(data.data.conversation.id);
         } else {
           setContactIsOnline(false);
@@ -72,7 +89,7 @@ function ConversationMain(props) {
       });
 
       channel.bind("pusher:member_added", function (member) {
-        if (channel.members && channel.members.count === 2) {
+        if (channel.members && channel.members.count === 2 && !data.data.conversation.deactivated_timestamp && !data.data.conversation.inactive_timestamp) {
           setContactIsOnline(data.data.conversation.id);
         } else {
           setContactIsOnline(false);
@@ -80,7 +97,7 @@ function ConversationMain(props) {
       });
 
       channel.bind("pusher:member_removed", function (member) {
-        if (channel.members && channel.members.count === 2) {
+        if (channel.members && channel.members.count === 2 && !data.data.conversation.deactivated_timestamp && !data.data.conversation.inactive_timestamp) {
           setContactIsOnline(data.data.conversation.id);
         } else {
           setContactIsOnline(false);
@@ -124,14 +141,14 @@ function ConversationMain(props) {
       channel.unbind("new-message");
       channel.unbind("client-typing");
 
-      if (channel.members && channel.members.count === 2) {
+      if (channel.members && channel.members.count === 2 && !data.data.conversation.deactivated_timestamp && !data.data.conversation.inactive_timestamp) {
         setContactIsOnline(data.data.conversation.id);
       } else {
         setContactIsOnline(false);
       }
 
       channel.bind("pusher:member_added", function (member) {
-        if (channel.members && channel.members.count === 2) {
+        if (channel.members && channel.members.count === 2 && !data.data.conversation.deactivated_timestamp && !data.data.conversation.inactive_timestamp) {
           setContactIsOnline(data.data.conversation.id);
         } else {
           setContactIsOnline(false);
@@ -139,7 +156,7 @@ function ConversationMain(props) {
       });
 
       channel.bind("pusher:member_removed", function (member) {
-        if (channel.members && channel.members.count === 2) {
+        if (channel.members && channel.members.count === 2 && !data.data.conversation.deactivated_timestamp && !data.data.conversation.inactive_timestamp) {
           setContactIsOnline(data.data.conversation.id);
         } else {
           setContactIsOnline(false);
@@ -256,6 +273,11 @@ function ConversationMain(props) {
 
   function displaySuccess(message) {
     const variant = "success";
+    enqueueSnackbar(message, { variant });
+  }
+
+  function displayNotification(message) {
+    const variant = "warning";
     enqueueSnackbar(message, { variant });
   }
 
@@ -439,6 +461,14 @@ function ConversationMain(props) {
             <ConversationLog
               message={"Conversation closed"}
               sent={data.data.conversation.deactivated_timestamp}
+            />
+          )}
+        {!isLoading &&
+          !isError &&
+          data.data.conversation.inactive_timestamp && (
+            <ConversationLog
+              message={"Visitor left the conversation"}
+              sent={data.data.conversation.inactive_timestamp}
             />
           )}
         <div style={{ float: "left", clear: "both" }} ref={messagesEnd}></div>

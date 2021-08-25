@@ -112,6 +112,34 @@ export async function requestDeleteConversation(conversationID) {
   })
 }
 
+// =====================================================ADDED 08/24/21===================================================================
+export async function visitorLeftCloseConversation(conversationID) {
+    const token = getJWT();
+    if (!conversationID) {
+      return;
+    }
+    const requestData = { conversationID: conversationID };
+    fetch(apiURL + "visitorLeftCloseConversation/", {
+      method: "POST",
+      withCredentials: true,
+      headers: {
+        "Authorization": token,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestData),
+    })
+      .then((response) => Promise.all([response, response.json()]))
+      .then(([response, json]) => {
+        if (response.status < 200 || response.status >= 300) {
+          let error = new Error(json.message);
+          error.response = response;
+          throw error;
+        }
+      })
+      .catch(function (ex) {});
+  }
+// ========================================================================================================================================
+
 export function useGetConversation(id) {
   const token = getJWT();
 
