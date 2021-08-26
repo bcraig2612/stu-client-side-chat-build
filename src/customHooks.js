@@ -127,16 +127,13 @@ export async function visitorLeftCloseConversation(conversationID) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(requestData),
-    })
-      .then((response) => Promise.all([response, response.json()]))
-      .then(([response, json]) => {
-        if (response.status < 200 || response.status >= 300) {
-          let error = new Error(json.message);
-          error.response = response;
-          throw error;
-        }
-      })
-      .catch(function (ex) {});
+    }).then(response => {
+    if (response.ok) {
+      return response.json();
+    } else {
+      throw new Error('Something went wrong');
+    }
+  })
   }
 // ========================================================================================================================================
 

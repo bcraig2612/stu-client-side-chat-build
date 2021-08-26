@@ -40,38 +40,30 @@ function ConversationMain(props) {
   const { enqueueSnackbar } = useSnackbar();
   const history = useHistory();
 
-  const { data, isLoading, isError } = useGetConversation(
-    props.selectedConversation
-  );
+  const { data, isLoading, isError } = useGetConversation(props.selectedConversation);
 
   // reference for end of message container
   const messagesEnd = useRef(null);
   const [submittingAcceptConversation, setSubmittingAcceptConversation] = useState(false);
   const [showTypingIndicator, setShowTypingIndicator] = useState(false);
   const [contactIsOnline, setContactIsOnline] = useState(false);
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
 
 // =====================================================ADDED 08/24/21===================================================================
   useEffect(() => {
     if (data && data.data.conversation && data.data.conversation.accepted === 1 && !data.data.conversation.deactivated_timestamp && !data.data.conversation.inactive_timestamp) {
-      if(contactIsOnline === false) {
-        let res = visitorLeftCloseConversation(data.data.conversation.id);
+      if(contactIsOnline === false && !data.data.conversation.inactive_timestamp) {
         const timer = setTimeout(() => {
-          res
-            .then((data) => {
-              history.push("/conversation/"+props.selectedConversation+"?filter=closed");
-              mutate("messages/?conversationID=" + props.selectedConversation);
-              displayNotification("Visitor left the conversation.");
-            })
-            .catch(() => {
-              displayError("Error closing conversation.");
-            });
+          // console.log("Hit 1st timeout");
+          visitorLeftCloseConversation(data.data.conversation.id).then(() => {
+            visitorLeft();
+          });
         }, 3000);
         return () => clearTimeout(timer);
       }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [contactIsOnline, data, props.selectedConversation])
+  }, [contactIsOnline])
 // ========================================================================================================================================
 
   useEffect(() => {
@@ -132,7 +124,8 @@ function ConversationMain(props) {
         }, 4000);
       });
     }
-  }, [data, props.selectedConversation]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
 
   useEffect(() => {
     if (data && data.data.conversation) {
@@ -191,7 +184,8 @@ function ConversationMain(props) {
         }, 4000);
       });
     }
-  }, [data, props.selectedConversation]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.selectedConversation]);
 
   // scroll to most recent chat messages on render
   useEffect(() => {
@@ -241,6 +235,16 @@ function ConversationMain(props) {
       .catch(() => {
         displayError("Error deleting conversation.");
       });
+  };
+
+  function visitorLeft() {
+    setAnchorEl(null);
+    history.push("/conversation/"+props.selectedConversation+"?filter=closed");
+    displayNotification("Visitor left the conversation.");
+    setTimeout(() => {
+      // console.log("Hit 2nd timeout");
+      mutate("messages/?conversationID=" + props.selectedConversation);
+    }, 2000);
   };
 
   const sendMessage = async (message) => {

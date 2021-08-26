@@ -82,7 +82,8 @@ function App() {
       mutate('conversations/?filter=open');
       newMessageAlert(false);
     });
-  }, [clientid, conversationID, history, pusherKey]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     setSelectedConversation(conversationID);
